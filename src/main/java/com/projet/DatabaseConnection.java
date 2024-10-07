@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseConnection {
-    private static final String URL = "jdbc:mysql://srv-bdens.insa-toulouse.fr:3306/";
+    private static final String URL = "jdbc:mysql://srv-bdens.insa-toulouse.fr:3306/projet_gei_004";
     private static final String USER = "projet_gei_004";
     private static final String PASSWORD = "eedi2AhJ";
 
@@ -22,7 +22,7 @@ public class DatabaseConnection {
         }
         return connection;
     }
-
+// Handle the exception appropriately
     public static void main(String[] args) {
         getConnection();
     }

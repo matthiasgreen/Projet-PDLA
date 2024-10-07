@@ -43,9 +43,20 @@ public class LoginComponent extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 login(usernameField.getText(), passwordField.getText());
             }
-            
+        
         });
 
+        signupButton.addActionListener(new ActionListener(){
+                    
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Create a new user
+                User user = new User(usernameField.getText(), passwordField.getText());
+                user.toDB(user);
+                loginListener.onLoginSuccess(user);
+
+            }
+        });
 
         buttonPanel.add(loginButton);
         buttonPanel.add(signupButton);

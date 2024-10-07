@@ -31,6 +31,7 @@ public class Main implements LoginListener {
         frame.setVisible(true);
     }
     
+
     @Override
     public void onLoginSuccess(User user) {
         System.out.println(user.username + user.password);
@@ -47,5 +48,4 @@ public class Main implements LoginListener {
             }
         });
     }
-
 }
