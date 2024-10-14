@@ -2,61 +2,68 @@ package com.projet;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.lang.Thread.State;
-import java.sql.Connection;
 
 public class User {
-    String username;
-    String password;
+    public int id;
+    public String username;
+    private String password;
+
+    User(int id, String username, String password) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+    }
 
     User(String username, String password) {
         this.username = username;
         this.password = password;
     }
 
-    //method to check that a username and password are in the database
-    public void checkUsernamePassword(User user){
+    private static ResultSet queryUser(String username, String password) throws SQLException {
+        Connection connection = DatabaseConnection.getConnection();
+        PreparedStatement statement = connection.prepareStatement(
+            "SELECT * FROM users WHERE username = ? AND password = ?"
+        );
+        statement.setString(1, username);
+        statement.setString(2, password);
+        return statement.executeQuery();
     }
 
     //methode to create a new line in the database when the signup button is clicked
-    public void toDB(User user){
+    public void toDB() throws SQLException, UserAlreadyExistsException {
         Connection connection = DatabaseConnection.getConnection();
-
+        PreparedStatement insertQuery = connection.prepareStatement(
+            "INSERT INTO users (username, password) VALUES (?, ?)"
+        );
+        insertQuery.setString(1, username);
+        insertQuery.setString(2, password);
         try {
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO user_pass (username, password) VALUES (?, ?)");
-            statement.setString(1, user.username);
-            statement.setString(2, user.password);
-            int resultset = statement.executeUpdate();
-    } catch (SQLException e) {
-        e.printStackTrace();
-        System.out.println("Error while creating user");
-
-    }
-        
-
-    }
-    public static User loginFromDB(String username, String password) {
-    
-        Connection connection = DatabaseConnection.getConnection();
-        try {
-            Statement statement = connection.createStatement();
-            //this checks if the username and password are in the database without
-            String query = "SELECT * FROM user_pass WHERE username = '" + username + "' AND password = '" + password + "';";
-            ResultSet resultset = statement.executeQuery(query);
-            if (resultset !=null){
-                //the user and pass is in the DB, procceed to the next page
-                return new User(username, password);
-            }
-
+            insertQuery.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("error getting the database");
+            if (e.getErrorCode() == 1169) {
+                throw new UserAlreadyExistsException("User already exists");
+            }
+            throw e;
         }
-        
-        return new User("dev", "dev");
+        insertQuery.close();
 
+        ResultSet idResult = queryUser(username, password);
+        if (idResult.next()) {
+            id = idResult.getInt("id");
+        } else {
+            throw new SQLException("User not found after insertion.");
+        }
+        idResult.close();
+    }
+
+    public static User loginFromDB(String username, String password) throws SQLException, IncorrectCredentialsException {
+        ResultSet result = queryUser(username, password);
+        if (result.next()) {
+            return new User(result.getInt("id"), result.getString("username"), result.getString("password"));
+        } else {
+            throw new IncorrectCredentialsException("Incorrect credentials");
+        }
     }
 }

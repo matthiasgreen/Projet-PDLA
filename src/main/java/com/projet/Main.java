@@ -1,6 +1,5 @@
 package com.projet;
 
-import java.awt.BorderLayout;
 import java.awt.CardLayout;
 
 import javax.swing.*;
@@ -15,8 +14,6 @@ public class Main implements LoginListener {
         // Create and set up the window.
         JFrame frame = new JFrame("Projet");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        
         
         cardPanel = new JPanel(new CardLayout());
         homeComponent = new HomeComponent();
@@ -24,7 +21,6 @@ public class Main implements LoginListener {
 
         cardPanel.add(loginComponent, "login");
         cardPanel.add(homeComponent, "home");
-        
         
         frame.getContentPane().add(cardPanel);
         frame.pack();
@@ -34,7 +30,6 @@ public class Main implements LoginListener {
 
     @Override
     public void onLoginSuccess(User user) {
-        System.out.println(user.username + user.password);
         CardLayout cardLayout = (CardLayout) cardPanel.getLayout();
         cardLayout.show(cardPanel, "home");
     }
