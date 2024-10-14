@@ -43,16 +43,18 @@ public class User {
         Connection connection = DatabaseConnection.getConnection();
         try {
             Statement statement = connection.createStatement();
-            String query = "SELECT * FROM user_pass";
+            //this checks if the username and password are in the database without
+            String query = "SELECT * FROM user_pass WHERE username = '" + username + "' AND password = '" + password + "';";
             ResultSet resultset = statement.executeQuery(query);
+            if (resultset !=null){
+                //the user and pass is in the DB, procceed to the next page
+                return new User(username, password);
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("error getting the database");
         }
-
-        //now we build instances of users from the data we got
-
-        //check that it's in the DB
         
         return new User("dev", "dev");
 
