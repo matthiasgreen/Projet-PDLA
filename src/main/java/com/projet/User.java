@@ -66,4 +66,18 @@ public class User {
             throw new IncorrectCredentialsException("Incorrect credentials");
         }
     }
+
+    public static User getFromDB(int id) throws SQLException {
+        Connection connection = DatabaseConnection.getConnection();
+        PreparedStatement statement = connection.prepareStatement(
+            "SELECT * FROM users WHERE id = ?"
+        );
+        statement.setInt(1, id);
+        ResultSet results = statement.executeQuery();
+        User user = null;
+        if (results.next()) {
+            user = new User(id, results.getString("username"), results.getString("password"));
+        }
+        return user;
+    }
 }
