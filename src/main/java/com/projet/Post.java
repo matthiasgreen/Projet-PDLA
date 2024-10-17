@@ -1,13 +1,13 @@
 package com.projet;
 
 public class Post {
-    public String name; 
-    public String description;
+    public String title; 
+    public String content;
     public User author;
 
-    Post(String name, String description, User author) {
-        this.name = name;
-        this.description = description;
+    Post(String title, String description, User author) {
+        this.title = title;
+        this.content = description;
         this.author = author;
     }
 }
