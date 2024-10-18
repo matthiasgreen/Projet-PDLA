@@ -36,10 +36,9 @@ jobs:
     - name: Set up MySQL
       run: >
         mysql -u root -proot -e '
+        CREATE DATABASE IF NOT EXISTS test;
         USE test;
-        SET FOREIGN_KEY_CHECKS = 0;
         source tables.sql;
-        SET FOREIGN_KEY_CHECKS = 1;'
         
     - name: Build and test with Maven
       run: mvn -B test --file pom.xml
