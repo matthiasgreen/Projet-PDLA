@@ -26,9 +26,9 @@ jobs:
     
     - name: Create config.properties file
       run: |
-        echo "db.url=jdbc:mysql://localhost:3306/test
-        db.user=root
-        db.password=root" > src/main/resources/config.properties
+        echo "database.url=jdbc:mysql://localhost:3306/test
+        database.user=root
+        database.password=root" > src/main/resources/config.properties
 
     - name: Start MySQL service
       run: sudo /etc/init.d/mysql start mysql
