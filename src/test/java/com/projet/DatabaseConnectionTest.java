@@ -19,6 +19,7 @@ public class DatabaseConnectionTest {
     @Test
     public void testQuery() throws SQLException {
         Connection connection = DatabaseConnection.getConnection();
+        assertNotNull(connection);
         Statement statement = connection.createStatement();
         ResultSet result = statement.executeQuery("SELECT COUNT(*) FROM users");
         assertTrue(result.next());

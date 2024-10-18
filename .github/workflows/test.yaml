@@ -6,7 +6,7 @@ name: Build with Maven
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "feature/test-database" ]
 
 jobs:
   build:
@@ -23,6 +23,26 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+    
+    - name: Create config.properties file
+      run: |
+        echo "db.url=jdbc:mysql://localhost:3306/test
+        db.user=root
+        db.password=root" > src/main/resources/config.properties
+      
+    - name: Set up MySQL
+      uses: mirromutth/mysql-action@v1.1
+      with:
+        mysql database: "test"
+        mysql root password: "root"
+
+    - name: Setup tables
+      run: >
+        "mysql -u root -proot -e '
+        USE test;
+        SET FOREIGN_KEY_CHECKS = 0;
+        source tables.sql;
+        SET FOREIGN_KEY_CHECKS = 1;'"
         
     - name: Build and test with Maven
       run: mvn -B test --file pom.xml
