@@ -21,6 +21,11 @@ public class User {
         this.password = password;
     }
 
+    User(int id, String username) {
+        this.id = id;
+        this.username = username;
+    }
+
     private static ResultSet queryUser(String username, String password) throws SQLException {
         Connection connection = DatabaseConnection.getConnection();
         PreparedStatement statement = connection.prepareStatement(
@@ -67,7 +72,7 @@ public class User {
         }
     }
 
-    public static User getFromDB(int id) throws SQLException {
+    public static User getFromDatabase(int id) throws SQLException {
         Connection connection = DatabaseConnection.getConnection();
         PreparedStatement statement = connection.prepareStatement(
             "SELECT * FROM users WHERE id = ?"
