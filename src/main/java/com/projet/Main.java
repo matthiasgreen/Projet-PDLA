@@ -1,6 +1,7 @@
 package com.projet;
 
 import java.awt.CardLayout;
+import java.awt.Dimension;
 
 import javax.swing.*;
 
@@ -8,11 +9,12 @@ public class Main implements LoginListener {
     HomeComponent homeComponent;
     LoginComponent loginComponent;
     JPanel cardPanel;
-
+    JFrame frame;
 
     Main() {
         // Create and set up the window.
-        JFrame frame = new JFrame("Projet");
+        frame = new JFrame("Projet");
+        frame.setPreferredSize(new Dimension(1000, 800));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         cardPanel = new JPanel(new CardLayout());
@@ -26,12 +28,13 @@ public class Main implements LoginListener {
         frame.pack();
         frame.setVisible(true);
     }
-    
 
     @Override
     public void onLoginSuccess(User user) {
+        homeComponent.setLoggedInUser(user);
         CardLayout cardLayout = (CardLayout) cardPanel.getLayout();
         cardLayout.show(cardPanel, "home");
+        frame.pack();
     }
 
     public static void main(String[] args) {

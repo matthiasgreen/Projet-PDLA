@@ -1,21 +1,48 @@
 package com.projet;
 
+import java.awt.CardLayout;
+
 import javax.swing.*;
 
-public class HomeComponent extends JPanel {
-    private JLabel label;
+public class HomeComponent extends JPanel implements TogglePostCreateListener {
+    private User loggedInUser;
+    private JPanel cardPanel;
+    private String currentView;
+    private PostListView postListView;
+    private PostCreateView postCreateView;
 
     public HomeComponent() {
-        label = new JLabel("Welcome to Home Component");
-        add(label);
+        CardLayout cardLayout = new CardLayout();
+        cardPanel = new JPanel(cardLayout);
+        add(cardPanel);
 
-        Post[] posts = {
-            new Post("test", "test", null),
-            new Post("test2", "test2", null)
-        };
+        postListView = new PostListView(this, false);
+        cardPanel.add(postListView, "postList");
+        
+        postCreateView = new PostCreateView(this, false);
+        cardPanel.add(postCreateView, "postCreate");
+        
+        currentView = "postList";
+        cardLayout.show(cardPanel, currentView);
+    }
 
-        PostListComponent postList = new PostListComponent(posts);
+    @Override
+    public void onTogglePostCreate() {
+        CardLayout cardLayout = (CardLayout) cardPanel.getLayout();
+        if (currentView.equals("postList")) {
+            currentView = "postCreate";
+            
+        } else {
+            currentView = "postList";
+            // When switching to postlist, reload the posts
+            postListView.loadPosts();
+            postListView.renderList();
+        }
+        cardLayout.show(cardPanel, currentView);
+    }
 
-        add(postList);
+    public void setLoggedInUser(User user) {
+        loggedInUser = user;
+        postCreateView.loggedInUser = user;
     }
 }
