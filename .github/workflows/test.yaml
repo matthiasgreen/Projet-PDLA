@@ -6,7 +6,7 @@ name: Build and test with Maven
 
 on:
   push:
-    branches: [ "feature/test-database" ]
+    branches: [ "main" ]
 
 jobs:
   build:
