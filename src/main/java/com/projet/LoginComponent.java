@@ -10,8 +10,8 @@ import javax.swing.*;
 public class LoginComponent extends JPanel {
     // This component contains two text fields (username and password)
     // and two buttons: log in and sign up
-    JTextField usernameField;
-    JTextField passwordField;
+    CustomTextField<JTextField> usernameField;
+    CustomTextField<JPasswordField> passwordField;
     JLabel errorMessage;
     JButton loginButton;
     JButton signupButton;
@@ -46,23 +46,38 @@ public class LoginComponent extends JPanel {
 
     LoginComponent(LoginListener loginListener) {
         this.loginListener = loginListener;
-        setPreferredSize(new Dimension(350, 400));
-        usernameField = new JTextField("Enter username");
-        usernameField.setPreferredSize(new Dimension(300, 100));
-        usernameField.setHorizontalAlignment(SwingConstants.CENTER);
-        passwordField = new JTextField("Enter password");
-        passwordField.setPreferredSize(new Dimension(300, 100));
-        passwordField.setHorizontalAlignment(SwingConstants.CENTER);
-        errorMessage = new JLabel();
-        errorMessage.setPreferredSize(new Dimension(300, 100));
-        errorMessage.setHorizontalAlignment(SwingConstants.CENTER);
-        errorMessage.setForeground(Color.RED);
-        add(errorMessage);
+        setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(10, 10, 10, 10);
 
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new FlowLayout());
+        usernameField = new CustomTextField<>("Username:", new JTextField());
+        usernameField.setPreferredSize(new Dimension(300, 100));
+        c.gridwidth = 2;
+        c.gridx = 0;
+        c.gridy = 0;
+        add(usernameField, c);
+
+        passwordField = new CustomTextField<>("Password:", new JPasswordField());
+        passwordField.setPreferredSize(new Dimension(300, 100));
+        c.gridx = 0;
+        c.gridy = 1;
+        add(passwordField, c);
+
+        errorMessage = new JLabel();
+        errorMessage.setForeground(Color.RED);
+        errorMessage.setFont(errorMessage.getFont().deriveFont(16.0f));
+        c.gridx = 0;
+        c.gridy = 2;
+        add(errorMessage, c);
+
+        
         loginButton = new JButton("Log in");
+        loginButton.setPreferredSize(new Dimension(200, 100));
+        loginButton.setFont(loginButton.getFont().deriveFont(16.0f));
         signupButton = new JButton("Sign up");
+        signupButton.setPreferredSize(new Dimension(200, 100));
+        signupButton.setFont(signupButton.getFont().deriveFont(16.0f));
 
         loginButton.addActionListener(new ActionListener() {
             @Override
@@ -72,17 +87,19 @@ public class LoginComponent extends JPanel {
         });
 
         signupButton.addActionListener(new ActionListener(){
-                    
             @Override
             public void actionPerformed(ActionEvent e) {
                 signUp(usernameField.getText(), passwordField.getText());
             }
         });
+        
+        c.gridwidth = 1;
+        c.gridx = 0;
+        c.gridy = 3;
+        add(loginButton, c);
 
-        buttonPanel.add(loginButton);
-        buttonPanel.add(signupButton);
-        add(usernameField);
-        add(passwordField);
-        add(buttonPanel);
+        c.gridx = 1;
+        c.gridy = 3;
+        add(signupButton, c);
     }
 }
