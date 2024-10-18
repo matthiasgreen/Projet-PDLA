@@ -29,15 +29,17 @@ jobs:
         echo "db.url=jdbc:mysql://localhost:3306/test
         db.user=root
         db.password=root" > src/main/resources/config.properties
+
+    - name: Start MySQL service
+      run: sudo /etc/init.d/mysql start mysql
       
     - name: Set up MySQL
       run: >
-        "sudo /etc/init.d/mysql start &&
         mysql -u root -proot -e '
         USE test;
         SET FOREIGN_KEY_CHECKS = 0;
         source tables.sql;
-        SET FOREIGN_KEY_CHECKS = 1;'"
+        SET FOREIGN_KEY_CHECKS = 1;'
         
     - name: Build and test with Maven
       run: mvn -B test --file pom.xml
