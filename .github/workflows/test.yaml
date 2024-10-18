@@ -15,16 +15,6 @@ jobs:
     permissions:
       contents: write
 
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_DATABASE: test
-          MYSQL_ROOT_PASSWORD: root
-        ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-
     steps:
     - uses: actions/checkout@v4
     - name: Set up JDK 17
@@ -42,7 +32,8 @@ jobs:
       
     - name: Set up MySQL
       run: >
-        "sudo mysql -u root -proot -e '
+        "sudo /etc/init.d/mysql start
+        mysql -u root -proot -e '
         USE test;
         SET FOREIGN_KEY_CHECKS = 0;
         source tables.sql;
