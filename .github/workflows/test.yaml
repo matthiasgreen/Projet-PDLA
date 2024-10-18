@@ -2,11 +2,11 @@
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
 # And github.com/actions/upload-release-asset
 
-name: Build with Maven
+name: Build and test with Maven
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "feature/test-database" ]
 
 jobs:
   build:
@@ -23,6 +23,22 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+    
+    - name: Create config.properties file
+      run: |
+        echo "database.url=jdbc:mysql://localhost:3306/test
+        database.user=root
+        database.password=root" > src/main/resources/config.properties
+
+    - name: Start MySQL service
+      run: sudo /etc/init.d/mysql start mysql
+      
+    - name: Set up MySQL
+      run: >
+        mysql -u root -proot -e '
+        CREATE DATABASE IF NOT EXISTS test;
+        USE test;
+        source tables.sql;'
         
     - name: Build and test with Maven
       run: mvn -B test --file pom.xml
