@@ -15,7 +15,7 @@ CREATE TABLE posts (
     content TEXT NOT NULL,
 
     type ENUM("offer", "mission") NOT NULL,
-    status ENUM("pending", "validated", "refused") NOT NULL,
+    status ENUM("pending", "validated", "refused"),
     refusal_reason TEXT,
     location VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
