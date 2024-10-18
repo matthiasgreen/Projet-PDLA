@@ -9,21 +9,26 @@ public class User {
     public int id;
     public String username;
     private String password;
+    public UserRole role;
 
-    User(int id, String username, String password) {
+
+    User(int id, String username, String password, UserRole role) {
         this.id = id;
         this.username = username;
         this.password = password;
+        this.role = role;
     }
 
-    User(String username, String password) {
+    User(String username, String password, UserRole role) {
         this.username = username;
         this.password = password;
+        this.role = role;
     }
 
-    User(int id, String username) {
+    User(int id, String username, UserRole role) {
         this.id = id;
         this.username = username;
+        this.role = role;
     }
 
     private static ResultSet queryUser(String username, String password) throws SQLException {
@@ -40,10 +45,11 @@ public class User {
     public void toDB() throws SQLException, UserAlreadyExistsException {
         Connection connection = DatabaseConnection.getConnection();
         PreparedStatement insertQuery = connection.prepareStatement(
-            "INSERT INTO users (username, password) VALUES (?, ?)"
+            "INSERT INTO users (username, password, role) VALUES (?, ?, ?)"
         );
         insertQuery.setString(1, username);
         insertQuery.setString(2, password);
+        insertQuery.setString(3, role.toString());
         try {
             insertQuery.executeUpdate();
         } catch (SQLException e) {
@@ -63,10 +69,10 @@ public class User {
         idResult.close();
     }
 
-    public static User loginFromDB(String username, String password) throws SQLException, IncorrectCredentialsException {
+    public static User loginFromDB(String username, String password ) throws SQLException, IncorrectCredentialsException {
         ResultSet result = queryUser(username, password);
         if (result.next()) {
-            return new User(result.getInt("id"), result.getString("username"), result.getString("password"));
+            return new User(result.getInt("id"), result.getString("username"), result.getString("password"), UserRole.fromString(result.getString("role")));
         } else {
             throw new IncorrectCredentialsException("Incorrect credentials");
         }
@@ -81,8 +87,13 @@ public class User {
         ResultSet results = statement.executeQuery();
         User user = null;
         if (results.next()) {
-            user = new User(id, results.getString("username"), results.getString("password"));
+            user = new User(id, results.getString("username"), results.getString("password"), UserRole.fromString(results.getString("role")));
         }
         return user;
+    }
+
+    //getter de role
+    public UserRole getRole() {
+        return role;
     }
 }

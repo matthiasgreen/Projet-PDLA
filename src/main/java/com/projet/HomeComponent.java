@@ -16,10 +16,10 @@ public class HomeComponent extends JPanel implements TogglePostCreateListener {
         cardPanel = new JPanel(cardLayout);
         add(cardPanel);
 
-        postListView = new PostListView(this, false);
+        postListView = new PostListView(this);
         cardPanel.add(postListView, "postList");
         
-        postCreateView = new PostCreateView(this, false);
+        postCreateView = new PostCreateView(this,true);
         cardPanel.add(postCreateView, "postCreate");
         
         currentView = "postList";
@@ -44,5 +44,10 @@ public class HomeComponent extends JPanel implements TogglePostCreateListener {
     public void setLoggedInUser(User user) {
         loggedInUser = user;
         postCreateView.loggedInUser = user;
+        if (user.role.equals(UserRole.VOLUNTEER)) {
+            postListView.setIsOffers(false);
+        } else {
+            postListView.setIsOffers(true);
+        }
     }
 }

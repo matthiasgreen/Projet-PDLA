@@ -25,7 +25,7 @@ public class PostListView extends JPanel {
     
     private PostView selectedPostComponent;
 
-    private boolean isOffers;
+    private boolean isOffers = false;
 
     private void onPostSelect(Post post) {
         selectedPostComponent.setPost(post);
@@ -82,8 +82,7 @@ public class PostListView extends JPanel {
         }
     }
 
-    public PostListView(TogglePostCreateListener createListener, boolean isOffers) {
-        this.isOffers = isOffers;
+    public PostListView(TogglePostCreateListener createListener) {
         postJList = new JList<>();
         postJList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         postJList.setCellRenderer(new DefaultListCellRenderer() {
@@ -168,5 +167,11 @@ public class PostListView extends JPanel {
                 onPostSelect(selectedPost);
             }
         });
+    }
+
+    public void setIsOffers(boolean isOffers) {
+        this.isOffers = isOffers;
+        loadPosts();
+        renderList();
     }
 }

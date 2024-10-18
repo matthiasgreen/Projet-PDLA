@@ -34,7 +34,7 @@ public class Offer extends Post {
             int userId = result.getInt("user_id");
             User author = users.get(userId);
             if (author == null) {
-                author = new User(userId, result.getString("username"));
+                author = new User(userId, result.getString("username"), author.getRole());
                 users.put(userId, author);
             }
             String title = result.getString("title");

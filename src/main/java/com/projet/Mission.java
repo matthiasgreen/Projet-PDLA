@@ -61,8 +61,9 @@ public class Mission extends Post {
         while (result.next()) {
             int userId = result.getInt("user_id");
             User author = users.get(userId);
+
             if (author == null) {
-                author = new User(userId, result.getString("username"));
+                author = new User(userId, result.getString("username"), UserRole.fromString(result.getString("role")));
                 users.put(userId, author);
             }
             Mission mission = new Mission(

@@ -31,9 +31,15 @@ public class LoginComponent extends JPanel {
         }
     }
 
-    private void signUp(String username, String password) {
+    private void signUp(String username, String password, boolean isVolunteer) {
+        UserRole role;
+        if (isVolunteer==true) {
+            role = UserRole.VOLUNTEER;
+        } else {
+            role = UserRole.USER;
+        }
         try {
-            User user = new User(username, password);
+            User user = new User(username, password, role);
             user.toDB();
             loginListener.onLoginSuccess(user);
         } catch (SQLException e) {
@@ -71,6 +77,12 @@ public class LoginComponent extends JPanel {
         c.gridy = 2;
         add(errorMessage, c);
 
+        //add a checkbox for wheter or no the person signing up is a volunteer
+        JCheckBox iSvolunteer = new JCheckBox("Volunteer");
+        c.gridx = 2;
+        c.gridy = 2;
+        add(iSvolunteer, c);
+
         
         loginButton = new JButton("Log in");
         loginButton.setPreferredSize(new Dimension(200, 100));
@@ -89,7 +101,7 @@ public class LoginComponent extends JPanel {
         signupButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                signUp(usernameField.getText(), passwordField.getText());
+                signUp(usernameField.getText(), passwordField.getText(), iSvolunteer.isSelected());
             }
         });
         
