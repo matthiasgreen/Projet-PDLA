@@ -85,15 +85,7 @@ public class PostListView extends JPanel {
     public PostListView(TogglePostCreateListener createListener) {
         postJList = new JList<>();
         postJList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        postJList.setCellRenderer(new DefaultListCellRenderer() {
-            @Override
-            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                Post post = (Post) value;
-                label.setText(post.title);
-                return label;
-            }
-        });
+        postJList.setCellRenderer(new PostListCellRenderer(true));
 
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();

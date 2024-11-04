@@ -9,14 +9,22 @@ public class HomeComponent extends JPanel implements TogglePostCreateListener {
     private String currentView;
     private PostListView postListView;
     private PostCreateView postCreateView;
+    private MyPostListView myPostListView;
 
     public HomeComponent() {
         CardLayout cardLayout = new CardLayout();
         cardPanel = new JPanel(cardLayout);
         add(cardPanel);
 
+        JPanel postPanel = new JPanel();
+        postPanel.setLayout(new BoxLayout(postPanel, BoxLayout.X_AXIS));
         postListView = new PostListView(this);
-        cardPanel.add(postListView, "postList");
+        postPanel.add(postListView);
+        // Ajouter MyPostListView
+        myPostListView = new MyPostListView();
+        postPanel.add(myPostListView);
+        
+        cardPanel.add(postPanel, "postList");
         
         postCreateView = new PostCreateView(this,true);
         cardPanel.add(postCreateView, "postCreate");
