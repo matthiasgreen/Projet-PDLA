@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.management.relation.Role;
 
 public class Offer extends Post {
     Offer(User author, String title, String content, String location) {
