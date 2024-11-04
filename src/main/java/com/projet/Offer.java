@@ -21,7 +21,7 @@ public class Offer extends Post {
     public void toDatabase() throws SQLException {
         PreparedStatement statement = prepareInsertStatement();
         statement.setString(1, "offer");
-        statement.setString(2, null);
+        statement.setString(2, "validated");
         statement.executeUpdate();
         statement.close();
     }
