@@ -63,4 +63,8 @@ public class PostCreateView extends JPanel {
     private void onCancel() {
         createListener.onTogglePostCreate();
     }
+
+    public void setOffers(boolean isOffers) {
+        this.isOffers = isOffers;
+    }
 }

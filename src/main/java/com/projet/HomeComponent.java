@@ -5,7 +5,6 @@ import java.awt.CardLayout;
 import javax.swing.*;
 
 public class HomeComponent extends JPanel implements TogglePostCreateListener {
-    private User loggedInUser;
     private JPanel cardPanel;
     private String currentView;
     private PostListView postListView;
@@ -42,12 +41,13 @@ public class HomeComponent extends JPanel implements TogglePostCreateListener {
     }
 
     public void setLoggedInUser(User user) {
-        loggedInUser = user;
         postCreateView.loggedInUser = user;
         if (user.role.equals(UserRole.VOLUNTEER)) {
             postListView.setIsOffers(false);
+            postCreateView.setOffers(true);
         } else {
             postListView.setIsOffers(true);
+            postCreateView.setOffers(false);
         }
     }
 }
