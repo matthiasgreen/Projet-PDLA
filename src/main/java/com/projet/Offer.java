@@ -49,6 +49,22 @@ public class Offer extends Post {
         return offers;
     }
 
+    public static ArrayList<Offer> getMyOffers(User user, int page) throws SQLException {
+        ArrayList<Offer> offers = new ArrayList<>();
+        ResultSet result = getMyPosts("offer", user, page);
+
+        while (result.next()) {
+            int id = result.getInt("id");
+            String title = result.getString("title");
+            String content = result.getString("content");
+            String location = result.getString("location");
+            Date createdAt = result.getDate("created_at");
+            offers.add(new Offer(id, user, title, content, location, createdAt));
+        }
+
+        return offers;
+    }
+
     public static int getNumberOfPages(String type) throws SQLException {
         return Post.getNumberOfPages("offer");
     }

@@ -54,6 +54,18 @@ public class Post {
         return statement.executeQuery();
     }
 
+    public static ResultSet getMyPosts(String type, User user, int page) throws SQLException {
+        Connection connection = DatabaseConnection.getConnection();
+        PreparedStatement statement = connection.prepareStatement(
+            "SELECT * FROM posts LEFT JOIN users ON user_id=users.id WHERE type=? AND user_id=? ORDER BY created_at DESC LIMIT ? OFFSET ?"
+        );
+        statement.setString(1, type);
+        statement.setInt(2, user.id);
+        statement.setInt(3, PAGE_SIZE);
+        statement.setInt(4, page * PAGE_SIZE);
+        return statement.executeQuery();
+    }
+
     public static int getNumberOfPages(String type) throws SQLException {
         Connection connection = DatabaseConnection.getConnection();
         PreparedStatement statement = connection.prepareStatement(
