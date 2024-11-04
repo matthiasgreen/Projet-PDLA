@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.management.relation.Role;
+
 public class Offer extends Post {
     Offer(User author, String title, String content, String location) {
         super(author, title, content, location);
@@ -34,7 +36,7 @@ public class Offer extends Post {
             int userId = result.getInt("user_id");
             User author = users.get(userId);
             if (author == null) {
-                author = new User(userId, result.getString("username"), author.getRole());
+                author = new User(userId, result.getString("username"), UserRole.fromString(result.getString("role")));
                 users.put(userId, author);
             }
             String title = result.getString("title");
