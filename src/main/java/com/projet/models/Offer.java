@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 
 public class Offer extends Post {
-    Offer(User author, String title, String content, String location) {
+    public Offer(User author, String title, String content, String location) {
         super(author, title, content, location);
     }
 

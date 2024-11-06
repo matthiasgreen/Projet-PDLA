@@ -59,7 +59,7 @@ public class LoginComponent extends JPanel {
         }
     }
 
-    LoginComponent(LoginListener loginListener) {
+    public LoginComponent(LoginListener loginListener) {
         this.loginListener = loginListener;
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();

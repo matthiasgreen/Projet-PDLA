@@ -13,7 +13,7 @@ public class Mission extends Post {
     public MissionStatus status;
     public String refusalReason;
 
-    Mission(User author, String title, String content, String location) {
+    public Mission(User author, String title, String content, String location) {
         super(author, title, content, location);
         this.status = MissionStatus.PENDING;
     }
