@@ -38,10 +38,12 @@ public class LoginComponent extends JPanel {
         }
     }
 
-    private void signUp(String username, String password, boolean isVolunteer) {
+    private void signUp(String username, String password, boolean isVolunteer, boolean isValidator) {
         UserRole role;
         if (isVolunteer==true) {
             role = UserRole.VOLUNTEER;
+        } else if (isValidator==true) {
+            role = UserRole.VALIDATOR;
         } else {
             role = UserRole.USER;
         }
@@ -90,6 +92,11 @@ public class LoginComponent extends JPanel {
         c.gridy = 2;
         add(iSvolunteer, c);
 
+        JCheckBox iSvalidator = new JCheckBox("Validator");
+        c.gridx = 1;
+        c.gridy = 2;
+        add(iSvalidator, c);
+
         
         loginButton = new JButton("Log in");
         loginButton.setPreferredSize(new Dimension(200, 100));
@@ -105,13 +112,25 @@ public class LoginComponent extends JPanel {
             }
         });
 
-        signupButton.addActionListener(new ActionListener(){
+        //we redefine th
+        //signupButton.addActionListener(new ActionListener(){
+        //    @Override
+        //    public void actionPerformed(ActionEvent e) {
+        //        signUp(usernameField.getText(), passwordField.getText(), iSvolunteer.isSelected());
+        //    }
+        //});
+        signupButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                signUp(usernameField.getText(), passwordField.getText(), iSvolunteer.isSelected());
+                if (iSvolunteer.isSelected()) {
+                    signUp(usernameField.getText(), passwordField.getText(), iSvolunteer.isSelected(),false);
+                } else if (iSvalidator.isSelected()) {
+                    signUp(usernameField.getText(), passwordField.getText(),false, iSvalidator.isSelected());
+                } else {
+                    signUp(usernameField.getText(), passwordField.getText(),false,false);
+                }
             }
-        });
-        
+        });        
         c.gridwidth = 1;
         c.gridx = 0;
         c.gridy = 3;
