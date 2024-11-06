@@ -3,64 +3,29 @@ package com.projet.views;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
 
 import javax.swing.*;
 
-import com.projet.LoginListener;
-import com.projet.database.IncorrectCredentialsException;
-import com.projet.database.UserAlreadyExistsException;
-import com.projet.models.User;
+import com.projet.controllers.UserController;
 import com.projet.models.UserRole;
 import com.projet.swingComponents.CustomTextField;
 
-public class LoginComponent extends JPanel {
+public class LoginView extends JPanel {
     // This component contains two text fields (username and password)
     // and two buttons: log in and sign up
-    CustomTextField<JTextField> usernameField;
-    CustomTextField<JPasswordField> passwordField;
-    JLabel errorMessage;
-    JButton loginButton;
-    JButton signupButton;
-    LoginListener loginListener;
+    private CustomTextField<JTextField> usernameField;
+    private CustomTextField<JPasswordField> passwordField;
+    private JLabel errorMessage;
+    private JButton loginButton;
+    private JButton signupButton;
 
-    private void login(String username, String password) {
-        try {
-            User user = User.loginFromDB(username, password);
-            loginListener.onLoginSuccess(user);
-        } catch (SQLException e) {
-            errorMessage.setText("An error occurred while trying to log in.");
-            e.printStackTrace();
-            return;
-        } catch (IncorrectCredentialsException e) {
-            errorMessage.setText("Incorrect username or password.");
-            return;
-        }
+    private UserController userController;
+
+    public void setUserController(UserController userController) {
+        this.userController = userController;
     }
 
-    private void signUp(String username, String password, boolean isVolunteer, boolean isValidator) {
-        UserRole role;
-        if (isVolunteer==true) {
-            role = UserRole.VOLUNTEER;
-        } else if (isValidator==true) {
-            role = UserRole.VALIDATOR;
-        } else {
-            role = UserRole.USER;
-        }
-        try {
-            User user = new User(username, password, role);
-            user.toDB();
-            loginListener.onLoginSuccess(user);
-        } catch (SQLException e) {
-            errorMessage.setText("An error occurred while trying to sign up.");
-            e.printStackTrace();
-        } catch (UserAlreadyExistsException e) {
-            errorMessage.setText("Username already exists.");
-        }
-    }
-
-    public LoginComponent(LoginListener loginListener) {
-        this.loginListener = loginListener;
+    public LoginView() {
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -108,27 +73,25 @@ public class LoginComponent extends JPanel {
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                login(usernameField.getText(), passwordField.getText());
+                userController.login(usernameField.getText(), passwordField.getText());
             }
         });
 
-        //we redefine th
-        //signupButton.addActionListener(new ActionListener(){
-        //    @Override
-        //    public void actionPerformed(ActionEvent e) {
-        //        signUp(usernameField.getText(), passwordField.getText(), iSvolunteer.isSelected());
-        //    }
-        //});
         signupButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (iSvolunteer.isSelected()) {
-                    signUp(usernameField.getText(), passwordField.getText(), iSvolunteer.isSelected(),false);
+                UserRole role;
+                if (iSvolunteer.isSelected() && iSvalidator.isSelected()) {
+                    onError("You can't be both a volunteer and a validator.");
+                    return;
+                } else if (iSvolunteer.isSelected()) {
+                    role = UserRole.VOLUNTEER;
                 } else if (iSvalidator.isSelected()) {
-                    signUp(usernameField.getText(), passwordField.getText(),false, iSvalidator.isSelected());
+                    role = UserRole.VALIDATOR;
                 } else {
-                    signUp(usernameField.getText(), passwordField.getText(),false,false);
+                    role = UserRole.USER;
                 }
+                userController.signUp(usernameField.getText(), passwordField.getText(), role);
             }
         });        
         c.gridwidth = 1;

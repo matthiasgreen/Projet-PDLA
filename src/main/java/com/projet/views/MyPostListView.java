@@ -1,8 +1,8 @@
 package com.projet.views;
 
 public class MyPostListView extends PostListView {
-    MyPostListView() {
-        super(null);
+    public MyPostListView(PostView selectedPostView) {
+        super(selectedPostView);
     }
     
 }

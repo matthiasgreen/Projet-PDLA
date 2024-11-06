@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import javax.swing.*;
 
 import com.projet.TogglePostCreateListener;
+import com.projet.controllers.PostController;
 import com.projet.models.Mission;
 import com.projet.models.Offer;
 import com.projet.models.Post;
@@ -18,7 +19,7 @@ public class PostListView extends JPanel {
     // Displays a scrollable list of posts with
     // a PostView component to display the selected post at the bottom
     // and page forward and page backward buttons at the bottom
-
+    private PostController postController;
     private JLabel errorLabel;
     private JButton pageBackwardButton;
     private JButton pageForwardButton;
@@ -26,16 +27,7 @@ public class PostListView extends JPanel {
     
     private JList<Post> postJList;
     
-    private int page = 0;
-    private ArrayList<Post> posts;
-    
-    private PostView selectedPostComponent;
-
     private boolean isOffers = false;
-
-    private void onPostSelect(Post post) {
-        selectedPostComponent.setPost(post);
-    }
 
     public void renderList() {
         DefaultListModel<Post> listModel = new DefaultListModel<>();
@@ -88,7 +80,15 @@ public class PostListView extends JPanel {
         }
     }
 
-    public PostListView(TogglePostCreateListener createListener) {
+    public void showPosts(java.util.List<Post> posts) {
+        DefaultListModel<Post> listModel = new DefaultListModel<>();
+        for (Post post : posts) {
+            listModel.addElement(post);
+        }
+        postJList.setModel(listModel);
+    }
+
+    public PostListView(PostView selectedPostView) {
         postJList = new JList<>();
         postJList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         postJList.setCellRenderer(new PostListCellRenderer(true));
@@ -118,16 +118,15 @@ public class PostListView extends JPanel {
         loadPosts();
         renderList();
 
-        selectedPostComponent = new PostView(posts.size() > 0 ? posts.get(0) : null);
         c.gridx = 0;
         c.gridy = 3;
-        add(selectedPostComponent, c);
+        add(selectedPostView, c);
         
         pageBackwardButton = new JButton("Previous page");
         pageBackwardButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                previousPage();
+                postController.mainListPreviousPage();
             }
         });
         c.gridwidth = 1;
@@ -140,7 +139,7 @@ public class PostListView extends JPanel {
         pageForwardButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                nextPage();
+                postController.mainListNextPage();
             }
         });
         c.gridx = 1;
@@ -151,7 +150,7 @@ public class PostListView extends JPanel {
         createPostButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                createListener.onTogglePostCreate();
+                postController.togglePostCreate();
             }
         });
         c.gridwidth = 2;
@@ -171,5 +170,9 @@ public class PostListView extends JPanel {
         this.isOffers = isOffers;
         loadPosts();
         renderList();
+    }
+
+    public void setPostController(PostController postController) {
+        this.postController = postController;
     }
 }

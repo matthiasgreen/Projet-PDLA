@@ -4,16 +4,17 @@ import java.awt.BorderLayout;
 
 import javax.swing.*;
 
+import com.projet.controllers.PostController;
 import com.projet.models.Post;
 
 public class PostView extends JPanel {
-    private Post post;
+    private PostController postController;
 
     JLabel titleLabel;
     JLabel contentLabel;
     JLabel authorDateLabel;
 
-    public PostView(Post post) {
+    public PostView() {
         setLayout(new BorderLayout());
         
         titleLabel = new JLabel();
@@ -26,20 +27,17 @@ public class PostView extends JPanel {
         authorDateLabel = new JLabel(
         );
         add(authorDateLabel, BorderLayout.SOUTH);
-
-        if (post != null) {
-            setPost(post);
-        }
     }
 
-    public void setPost(Post post) {
-        this.post = post;
-        if (post != null) {
-            titleLabel.setText(post.title);
-            contentLabel.setText(post.content);
-            authorDateLabel.setText(
-                "Created by " + post.author.username + " at " + post.createdAt.toString()
-            );
-        }
+    public void showPost(Post post) {
+        titleLabel.setText(post.title);
+        contentLabel.setText(post.content);
+        authorDateLabel.setText(
+            "Created by " + post.author.username + " at " + post.createdAt.toString()
+        );
+    }
+
+    public void setPostController(PostController postController) {
+        this.postController = postController;
     }
 }

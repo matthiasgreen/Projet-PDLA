@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import javax.swing.*;
 
 import com.projet.TogglePostCreateListener;
+import com.projet.controllers.PostController;
 import com.projet.models.Mission;
 import com.projet.models.Offer;
 import com.projet.models.User;
@@ -22,8 +23,7 @@ public class PostCreateView extends JPanel {
     public User loggedInUser;
     private TogglePostCreateListener createListener;
 
-    public PostCreateView(TogglePostCreateListener createListener, boolean isOffers) {
-        this.createListener = createListener;
+    public PostCreateView(boolean isOffers) {
         this.isOffers = isOffers;
         errorLabel = new JLabel();
         titleField = new CustomTextField<>("Title:", new JTextField());
@@ -72,5 +72,10 @@ public class PostCreateView extends JPanel {
 
     public void setOffers(boolean isOffers) {
         this.isOffers = isOffers;
+    }
+
+    public void setPostController(PostController postController) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setPostController'");
     }
 }

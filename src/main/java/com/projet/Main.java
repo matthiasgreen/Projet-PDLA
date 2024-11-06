@@ -1,44 +1,57 @@
 package com.projet;
 
-import java.awt.CardLayout;
 import java.awt.Dimension;
 
 import javax.swing.*;
 
-import com.projet.models.User;
-import com.projet.views.HomeComponent;
-import com.projet.views.LoginComponent;
+import com.projet.controllers.PostController;
+import com.projet.controllers.UserController;
+import com.projet.views.MyPostListView;
+import com.projet.views.PostCreateView;
+import com.projet.views.PostListView;
+import com.projet.views.PostView;
+import com.projet.views.ViewManager;
+import com.projet.views.LoginView;
 
-public class Main implements LoginListener {
-    HomeComponent homeComponent;
-    LoginComponent loginComponent;
-    JPanel cardPanel;
-    JFrame frame;
+public class Main {
 
-    Main() {
+    private static void createAndShowGUI() {
         // Create and set up the window.
-        frame = new JFrame("Projet");
+        JFrame frame = new JFrame("Projet");
         frame.setPreferredSize(new Dimension(1000, 800));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        cardPanel = new JPanel(new CardLayout());
-        homeComponent = new HomeComponent();
-        loginComponent = new LoginComponent(this);
+        // Create the views
+        LoginView loginView = new LoginView();
+        PostView selectedPostView = new PostView();
+        PostView mySelectedPostView = new PostView();
+        PostListView postListView = new PostListView(selectedPostView);
+        PostCreateView postCreateView = new PostCreateView(false);
+        MyPostListView myPostListView = new MyPostListView(mySelectedPostView);
+        ViewManager viewManager = new ViewManager(
+            loginView,
+            postListView,
+            postCreateView,
+            myPostListView
+        );
 
-        cardPanel.add(loginComponent, "login");
-        cardPanel.add(homeComponent, "home");
+        // Create the controllers
+        PostController postController = new PostController(
+            selectedPostView,
+            mySelectedPostView,
+            postListView,
+            myPostListView,
+            postCreateView,
+            viewManager
+        );
+        UserController userController = new UserController(
+            loginView,
+            viewManager,
+            postController
+        );
         
-        frame.getContentPane().add(cardPanel);
         frame.pack();
         frame.setVisible(true);
-    }
-
-    @Override
-    public void onLoginSuccess(User user) {
-        homeComponent.setLoggedInUser(user);
-        CardLayout cardLayout = (CardLayout) cardPanel.getLayout();
-        cardLayout.show(cardPanel, "home");
-        frame.pack();
     }
 
     public static void main(String[] args) {
@@ -46,7 +59,7 @@ public class Main implements LoginListener {
         // creating and showing this application's GUI.
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                new Main();
+                createAndShowGUI();
             }
         });
     }
