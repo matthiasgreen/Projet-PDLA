@@ -1,4 +1,4 @@
-package com.projet;
+package com.projet.swingComponents;
 
 import javax.swing.*;
 import javax.swing.text.JTextComponent;

@@ -1,8 +1,14 @@
-package com.projet;
+package com.projet.views;
 
 import java.sql.SQLException;
 
 import javax.swing.*;
+
+import com.projet.TogglePostCreateListener;
+import com.projet.models.Mission;
+import com.projet.models.Offer;
+import com.projet.models.User;
+import com.projet.swingComponents.CustomTextField;
 
 public class PostCreateView extends JPanel {
     private boolean isOffers;

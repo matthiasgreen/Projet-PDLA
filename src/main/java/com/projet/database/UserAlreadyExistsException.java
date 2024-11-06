@@ -1,4 +1,4 @@
-package com.projet;
+package com.projet.database;
 
 public class UserAlreadyExistsException extends Exception {
     public UserAlreadyExistsException(String message) {

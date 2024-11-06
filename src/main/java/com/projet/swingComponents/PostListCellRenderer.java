@@ -1,4 +1,4 @@
-package com.projet;
+package com.projet.swingComponents;
 
 import java.awt.Component;
 
@@ -7,6 +7,9 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
+
+import com.projet.models.Mission;
+import com.projet.models.Post;
 
 public class PostListCellRenderer extends JPanel implements ListCellRenderer<Post> {
     private JLabel titleLabel;

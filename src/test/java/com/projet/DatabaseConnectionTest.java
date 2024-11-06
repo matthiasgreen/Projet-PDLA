@@ -7,6 +7,8 @@ import java.sql.Statement;
 
 import org.junit.Test;
 
+import com.projet.database.DatabaseConnection;
+
 import static org.junit.Assert.*;
 
 public class DatabaseConnectionTest {

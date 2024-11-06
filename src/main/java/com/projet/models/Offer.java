@@ -1,4 +1,4 @@
-package com.projet;
+package com.projet.models;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;

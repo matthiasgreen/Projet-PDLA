@@ -1,8 +1,10 @@
-package com.projet;
+package com.projet.views;
 
 import java.awt.BorderLayout;
 
 import javax.swing.*;
+
+import com.projet.models.Post;
 
 public class PostView extends JPanel {
     private Post post;

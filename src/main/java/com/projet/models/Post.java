@@ -1,6 +1,8 @@
-package com.projet;
+package com.projet.models;
 
 import java.sql.*;
+
+import com.projet.database.DatabaseConnection;
 
 public class Post {
     public static int PAGE_SIZE = 10;

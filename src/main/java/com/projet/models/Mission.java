@@ -1,4 +1,4 @@
-package com.projet;
+package com.projet.models;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import com.projet.database.DatabaseConnection;
 
 public class Mission extends Post {
     public MissionStatus status;

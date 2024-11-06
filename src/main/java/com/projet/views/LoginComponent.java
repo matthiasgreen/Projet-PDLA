@@ -1,4 +1,4 @@
-package com.projet;
+package com.projet.views;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -6,6 +6,13 @@ import java.awt.event.ActionListener;
 import java.sql.SQLException;
 
 import javax.swing.*;
+
+import com.projet.LoginListener;
+import com.projet.database.IncorrectCredentialsException;
+import com.projet.database.UserAlreadyExistsException;
+import com.projet.models.User;
+import com.projet.models.UserRole;
+import com.projet.swingComponents.CustomTextField;
 
 public class LoginComponent extends JPanel {
     // This component contains two text fields (username and password)
@@ -113,5 +120,14 @@ public class LoginComponent extends JPanel {
         c.gridx = 1;
         c.gridy = 3;
         add(signupButton, c);
+    }
+
+    public void onError(String message) {
+        errorMessage.setText(message);
+    }
+
+    public void onSuccess() {
+        errorMessage.setText("");
+        // Login view no longer needed in this case
     }
 }

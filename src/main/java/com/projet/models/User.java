@@ -1,7 +1,12 @@
-package com.projet;
+package com.projet.models;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import com.projet.database.DatabaseConnection;
+import com.projet.database.IncorrectCredentialsException;
+import com.projet.database.UserAlreadyExistsException;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
@@ -12,20 +17,20 @@ public class User {
     public UserRole role;
 
 
-    User(int id, String username, String password, UserRole role) {
+    public User(int id, String username, String password, UserRole role) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.role = role;
     }
 
-    User(String username, String password, UserRole role) {
+    public User(String username, String password, UserRole role) {
         this.username = username;
         this.password = password;
         this.role = role;
     }
 
-    User(int id, String username, UserRole role) {
+    public User(int id, String username, UserRole role) {
         this.id = id;
         this.username = username;
         this.role = role;

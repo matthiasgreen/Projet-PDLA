@@ -1,4 +1,4 @@
-package com.projet;
+package com.projet.views;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -7,6 +7,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.swing.*;
+
+import com.projet.TogglePostCreateListener;
+import com.projet.models.Mission;
+import com.projet.models.Offer;
+import com.projet.models.Post;
+import com.projet.swingComponents.PostListCellRenderer;
 
 public class PostListView extends JPanel {
     // Displays a scrollable list of posts with

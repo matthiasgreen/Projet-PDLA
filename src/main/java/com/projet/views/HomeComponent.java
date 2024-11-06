@@ -1,8 +1,12 @@
-package com.projet;
+package com.projet.views;
 
 import java.awt.CardLayout;
 
 import javax.swing.*;
+
+import com.projet.TogglePostCreateListener;
+import com.projet.models.User;
+import com.projet.models.UserRole;
 
 public class HomeComponent extends JPanel implements TogglePostCreateListener {
     private JPanel cardPanel;
@@ -57,5 +61,9 @@ public class HomeComponent extends JPanel implements TogglePostCreateListener {
             postListView.setIsOffers(true);
             postCreateView.setOffers(false);
         }
+    }
+
+    public void onLogin() {
+        // TODO Change login component to be child of this view
     }
 }

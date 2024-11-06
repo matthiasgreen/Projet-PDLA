@@ -5,6 +5,10 @@ import java.awt.Dimension;
 
 import javax.swing.*;
 
+import com.projet.models.User;
+import com.projet.views.HomeComponent;
+import com.projet.views.LoginComponent;
+
 public class Main implements LoginListener {
     HomeComponent homeComponent;
     LoginComponent loginComponent;
