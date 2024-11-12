@@ -56,6 +56,7 @@ public class PostListView extends JPanel {
         postJList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         postJList.setCellRenderer(new PostListCellRenderer(true));
         postJList.setMinimumSize(new Dimension(400, 400));
+        postJList.setFixedCellHeight(50);
         c.gridy++;
 
         postListScrollPane = new JScrollPane(postJList);
