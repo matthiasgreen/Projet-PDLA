@@ -9,6 +9,7 @@ import com.projet.swingComponents.CustomTextField;
 
 public class PostCreateView extends JPanel {
     private boolean isOffers;
+    private JLabel titleLabel;
     private CustomTextField<JTextField> titleField;
     private CustomTextField<JTextField> descriptionField;
     private CustomTextField<JTextField> locationField;
@@ -21,7 +22,10 @@ public class PostCreateView extends JPanel {
 
     public PostCreateView(boolean isOffers) {
         this.isOffers = isOffers;
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         errorLabel = new JLabel();
+        titleLabel = new JLabel("Create a new post");
+        titleLabel.setFont(titleLabel.getFont().deriveFont(24.0f));
         titleField = new CustomTextField<>("Title:", new JTextField());
         descriptionField = new CustomTextField<>("Description:", new JTextField());
         locationField = new CustomTextField<>("Location:", new JTextField());
@@ -43,6 +47,7 @@ public class PostCreateView extends JPanel {
             locationField.setText("");
         });
 
+        add(titleLabel);
         add(titleField);
         add(descriptionField);
         add(locationField);
@@ -53,6 +58,7 @@ public class PostCreateView extends JPanel {
 
     public void setIsOffers(boolean isOffers) {
         this.isOffers = isOffers;
+        titleLabel.setText(isOffers ? "Create a new offer" : "Create a new mission");
     }
 
     public void setPostController(PostController postController) {

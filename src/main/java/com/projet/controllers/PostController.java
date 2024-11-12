@@ -48,7 +48,7 @@ public class PostController {
 
     public void setLoggedInUser(User user) {
         loggedInUser = user;
-        showOffers = user.getRole() == UserRole.VOLUNTEER;
+        showOffers = user.getRole() == UserRole.USER;
         postListView.setIsOffers(showOffers);
         myPostListView.setIsOffers(!showOffers);
         postCreateView.setIsOffers(!showOffers);
@@ -149,7 +149,7 @@ public class PostController {
 
     private void myListSetPosts() throws SQLException {
         List<Post> posts = new ArrayList<>();
-        if (showOffers) {
+        if (!showOffers) {
             ArrayList<Offer> offers = Offer.getMyOffers(loggedInUser, mainPage);
             for (Offer offer : offers) {
                 posts.add(offer);
@@ -179,7 +179,7 @@ public class PostController {
 
     public void createPost(String title, String content, String location) {
         try {
-            if (showOffers) {
+            if (!showOffers) {
                 new Offer(loggedInUser, title, content, location).toDatabase();
             } else {
                 new Mission(loggedInUser, title, content, location).toDatabase();
