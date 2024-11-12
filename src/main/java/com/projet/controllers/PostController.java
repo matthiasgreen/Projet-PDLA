@@ -7,6 +7,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 
 import com.projet.models.Mission;
+import com.projet.models.MissionStatus;
 import com.projet.models.Offer;
 import com.projet.models.Post;
 import com.projet.models.User;
@@ -190,4 +191,8 @@ public class PostController {
         }
         JOptionPane.showMessageDialog(null, "Post created successfully");
     }
+
+    public void ValidateMission(Mission mission){
+        mission.UpdateStatus(MissionStatus.VALIDATED);
+    };
 }

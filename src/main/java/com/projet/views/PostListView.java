@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 
 import com.projet.controllers.PostController;
+import com.projet.models.Mission;
 import com.projet.models.Post;
 import com.projet.swingComponents.PostListCellRenderer;
 
@@ -19,6 +20,7 @@ public class PostListView extends JPanel {
     private JLabel errorLabel;
     private JButton pageBackwardButton;
     private JButton pageForwardButton;
+    private JButton ValidatingButton;
     protected JButton createPostButton; 
     private JScrollPane postListScrollPane;
     
@@ -60,9 +62,11 @@ public class PostListView extends JPanel {
         add(postJList, c);
 
         postListScrollPane = new JScrollPane(postJList);
-        postListScrollPane.setPreferredSize(new Dimension(800, 500));
+        postListScrollPane.setPreferredSize(new Dimension(800, 600));
         c.gridy++;
         add(postListScrollPane, c);
+
+        
 
         c.gridy++;
         add(selectedPostView, c);
@@ -77,6 +81,15 @@ public class PostListView extends JPanel {
         pageForwardButton.addActionListener(e -> nextPage());
         c.gridx = 1;
         add(pageForwardButton, c);
+
+
+        //on ajoute un bouton de valisation que seul les valideurs voient 
+        ValidatingButton = new JButton("Validate");
+        ValidatingButton.addActionListener(e -> postController.ValidateMission((Mission) postJList.getSelectedValue()));
+        c.gridx = 0;
+        c.gridy++;
+        add(ValidatingButton, c);
+
 
         createPostButton = new JButton("Create post");
         createPostButton.addActionListener(new ActionListener() {

@@ -101,7 +101,12 @@ public class Mission extends Post {
         }
         return missions;
     }
-
+    public MissionStatus getMissionStatus() {
+        return this.status;
+    }
+    public void UpdateStatus(MissionStatus status) {
+        this.status = status;
+    }
     public static int getNumberOfPages(String type) throws SQLException {
         return Post.getNumberOfPages("mission");
     }
