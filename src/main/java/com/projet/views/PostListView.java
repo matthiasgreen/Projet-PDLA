@@ -3,15 +3,10 @@ package com.projet.views;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
-import java.util.ArrayList;
 
 import javax.swing.*;
 
-import com.projet.TogglePostCreateListener;
 import com.projet.controllers.PostController;
-import com.projet.models.Mission;
-import com.projet.models.Offer;
 import com.projet.models.Post;
 import com.projet.swingComponents.PostListCellRenderer;
 
@@ -19,66 +14,17 @@ public class PostListView extends JPanel {
     // Displays a scrollable list of posts with
     // a PostView component to display the selected post at the bottom
     // and page forward and page backward buttons at the bottom
-    private PostController postController;
+    protected PostController postController;
+    protected JLabel titleLabel;
     private JLabel errorLabel;
     private JButton pageBackwardButton;
     private JButton pageForwardButton;
+    protected JButton createPostButton; 
     private JScrollPane postListScrollPane;
     
-    private JList<Post> postJList;
-    
-    private boolean isOffers = false;
+    protected JList<Post> postJList;
 
-    public void renderList() {
-        DefaultListModel<Post> listModel = new DefaultListModel<>();
-        for (Post post : posts) {
-            listModel.addElement(post);
-        }
-        postJList.setModel(listModel);
-    }
-
-    public void loadPosts() {
-        try {
-            posts = new ArrayList<>();
-            if (isOffers) {
-                ArrayList<Offer> offers = Offer.getOffers(page);
-                for (Offer offer : offers) {
-                    posts.add(offer);
-                }
-            } else {
-                ArrayList<Mission> missions = Mission.getMissions(page);
-                for (Mission mission : missions) {
-                    posts.add(mission);
-                }
-            }
-        } catch (SQLException e) {
-            errorLabel.setText("Error loading posts: " + e.getMessage());
-        }
-    }
-
-    public void nextPage() {
-        try {
-            if (page < Post.getNumberOfPages(isOffers ? "offer" : "mission")) {
-                page++;
-                loadPosts();
-                renderList();
-            } else {
-                errorLabel.setText("No more pages");
-            }
-        } catch (SQLException e) {
-            errorLabel.setText("Error loading posts: " + e.getMessage());
-        }
-    }
-
-    public void previousPage() {
-        if (page > 0) {
-            page--;
-            loadPosts();
-            renderList();
-        } else {
-            errorLabel.setText("No more pages");
-        }
-    }
+    protected boolean isOffers;
 
     public void showPosts(java.util.List<Post> posts) {
         DefaultListModel<Post> listModel = new DefaultListModel<>();
@@ -105,48 +51,34 @@ public class PostListView extends JPanel {
         c.gridy = 0;
         add(errorLabel, c);
 
-        c.gridx = 0;
-        c.gridy = 1;
+        titleLabel = new JLabel("Posts");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        c.gridy++;
+        add(titleLabel, c);
+
+        c.gridy++;
         add(postJList, c);
 
         postListScrollPane = new JScrollPane(postJList);
         postListScrollPane.setPreferredSize(new Dimension(800, 500));
-        c.gridx = 0;
-        c.gridy = 2;
+        c.gridy++;
         add(postListScrollPane, c);
 
-        loadPosts();
-        renderList();
-
-        c.gridx = 0;
-        c.gridy = 3;
+        c.gridy++;
         add(selectedPostView, c);
         
         pageBackwardButton = new JButton("Previous page");
-        pageBackwardButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                postController.mainListPreviousPage();
-            }
-        });
+        pageBackwardButton.addActionListener(e -> previousPage());
         c.gridwidth = 1;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridx = 0;
-        c.gridy = 4;
+        c.gridy++;
         add(pageBackwardButton, c);
 
         pageForwardButton = new JButton("Next page");
-        pageForwardButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                postController.mainListNextPage();
-            }
-        });
+        pageForwardButton.addActionListener(e -> nextPage());
         c.gridx = 1;
-        c.gridy = 4;
         add(pageForwardButton, c);
 
-        JButton createPostButton = new JButton("Create post");
+        createPostButton = new JButton("Create post");
         createPostButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -155,24 +87,43 @@ public class PostListView extends JPanel {
         });
         c.gridwidth = 2;
         c.gridx = 0;
-        c.gridy = 5;
+        c.gridy++;
         add(createPostButton, c);
+        createPostButton.setVisible(false);
 
         postJList.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 Post selectedPost = postJList.getSelectedValue();
-                onPostSelect(selectedPost);
+                postController.selectPost(selectedPost);
             }
         });
     }
 
+    protected void nextPage() {
+        // Should be overriden by myPostListView
+        postController.mainListNextPage();
+    }
+
+    protected void previousPage() {
+        // Should be overriden by myPostListView
+        postController.mainListPreviousPage();
+    }
+
+    protected void selectPost() {
+        // Should be overriden by myPostListView
+        postController.selectPost(postJList.getSelectedValue());
+    }
+
     public void setIsOffers(boolean isOffers) {
         this.isOffers = isOffers;
-        loadPosts();
-        renderList();
+        titleLabel.setText(isOffers ? "Offers" : "Missions");
     }
 
     public void setPostController(PostController postController) {
         this.postController = postController;
+    }
+
+    public void setError(String string) {
+        errorLabel.setText(string);
     }
 }

@@ -83,6 +83,25 @@ public class Mission extends Post {
         return missions;
     }
 
+    public static ArrayList<Mission> getMyMissions(User user, int page) throws SQLException {
+        ArrayList<Mission> missions = new ArrayList<>();
+        ResultSet result = getMyPosts("mission", user, page);
+        while (result.next()) {
+            Mission mission = new Mission(
+                result.getInt("id"),
+                user,
+                result.getString("title"),
+                result.getString("content"),
+                result.getString("location"),
+                result.getDate("created_at"),
+                MissionStatus.valueOf(result.getString("status").toUpperCase()),
+                result.getString("refusal_reason")
+            );
+            missions.add(mission);
+        }
+        return missions;
+    }
+
     public static int getNumberOfPages(String type) throws SQLException {
         return Post.getNumberOfPages("mission");
     }

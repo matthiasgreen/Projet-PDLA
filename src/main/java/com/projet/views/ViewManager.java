@@ -28,8 +28,6 @@ public class ViewManager extends JPanel {
         postViews.add(postListView);
         postViews.add(myPostListView);
         add(postViews, "postList");
-
-        cardLayout.show(this, "login");
     }
 
     public void showLoginView() {

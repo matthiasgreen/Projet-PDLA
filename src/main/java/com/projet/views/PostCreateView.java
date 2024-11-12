@@ -1,13 +1,9 @@
 package com.projet.views;
 
-import java.sql.SQLException;
 
 import javax.swing.*;
 
-import com.projet.TogglePostCreateListener;
 import com.projet.controllers.PostController;
-import com.projet.models.Mission;
-import com.projet.models.Offer;
 import com.projet.models.User;
 import com.projet.swingComponents.CustomTextField;
 
@@ -19,9 +15,9 @@ public class PostCreateView extends JPanel {
     private JLabel errorLabel;
     private JButton submitButton;
     private JButton cancelButton;
+    private PostController postController;
 
     public User loggedInUser;
-    private TogglePostCreateListener createListener;
 
     public PostCreateView(boolean isOffers) {
         this.isOffers = isOffers;
@@ -31,10 +27,21 @@ public class PostCreateView extends JPanel {
         locationField = new CustomTextField<>("Location:", new JTextField());
 
         submitButton = new JButton("Submit");
-        submitButton.addActionListener(e -> onSubmit());
+        submitButton.addActionListener(e -> 
+            postController.createPost(
+                titleField.getText(),
+                descriptionField.getText(),
+                locationField.getText()
+            )
+        );
 
         cancelButton = new JButton("Cancel");
-        cancelButton.addActionListener(e -> onCancel());
+        cancelButton.addActionListener(e -> {
+            postController.togglePostCreate();
+            titleField.setText("");
+            descriptionField.setText("");
+            locationField.setText("");
+        });
 
         add(titleField);
         add(descriptionField);
@@ -44,38 +51,15 @@ public class PostCreateView extends JPanel {
         add(errorLabel);
     }
 
-    private void onSubmit() {
-        // Create a new post with the data from the fields
-        // and save it to the database
-        if (isOffers) {
-            Offer offer = new Offer(loggedInUser, titleField.getText(), descriptionField.getText(), locationField.getText());
-            try {
-                offer.toDatabase();
-            } catch (SQLException e) {
-                errorLabel.setText("Error saving offer: " + e.getMessage());
-            }
-        } else {
-            Mission mission = new Mission(loggedInUser, titleField.getText(), descriptionField.getText(), locationField.getText());
-            try {
-                mission.toDatabase();
-            } catch (SQLException e) {
-                errorLabel.setText("Error saving mission: " + e.getMessage());
-            }
-        }
-        JOptionPane.showMessageDialog(this, "Post created successfully");
-        createListener.onTogglePostCreate();
-    }
-
-    private void onCancel() {
-        createListener.onTogglePostCreate();
-    }
-
-    public void setOffers(boolean isOffers) {
+    public void setIsOffers(boolean isOffers) {
         this.isOffers = isOffers;
     }
 
     public void setPostController(PostController postController) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setPostController'");
+        this.postController = postController;
+    }
+
+    public void setError(String string) {
+        errorLabel.setText(string);
     }
 }

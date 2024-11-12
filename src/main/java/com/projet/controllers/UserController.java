@@ -11,16 +11,15 @@ import com.projet.views.LoginView;
 
 public class UserController {
     private LoginView loginView;
-    private ViewManager mainView;
+    private ViewManager viewManager;
 
     private PostController postController;
     
-    public UserController(LoginView loginView, ViewManager homeView, PostController postController) {
+    public UserController(LoginView loginView, ViewManager viewManager, PostController postController) {
         this.loginView = loginView;
-        this.mainView = homeView;
+        this.viewManager = viewManager;
         this.postController = postController;
         loginView.setUserController(this);
-        mainView.setUserController(this);
     }
 
     public void signUp(String username, String password, UserRole role) {
@@ -29,7 +28,7 @@ public class UserController {
             user.toDB();
             postController.setLoggedInUser(user);
             loginView.onSuccess();
-            mainView.showPostListView();
+            viewManager.showPostListView();
         } catch (SQLException e) {
             loginView.onError("An error occurred while trying to sign up.");
             e.printStackTrace();
@@ -43,7 +42,7 @@ public class UserController {
             User user = User.loginFromDB(username, password);
             loginView.onSuccess();
             postController.setLoggedInUser(user);
-            mainView.showPostListView();
+            viewManager.showPostListView();
         } catch (SQLException e) {
             loginView.onError("An error occurred while trying to log in.");
             e.printStackTrace();

@@ -1,6 +1,16 @@
 package com.projet.controllers;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JOptionPane;
+
+import com.projet.models.Mission;
+import com.projet.models.Offer;
+import com.projet.models.Post;
 import com.projet.models.User;
+import com.projet.models.UserRole;
 import com.projet.views.MyPostListView;
 import com.projet.views.PostCreateView;
 import com.projet.views.PostListView;
@@ -8,11 +18,26 @@ import com.projet.views.PostView;
 import com.projet.views.ViewManager;
 
 public class PostController {
-    private User loggedInUser;
+    private PostView selectedPostView;
+    private PostView mySelectedPostView;
+    private PostListView postListView;
+    private MyPostListView myPostListView;
+    private PostCreateView postCreateView;
     private ViewManager viewManager;
+    
+    private User loggedInUser;
+    private int mainPage = 0;
+    private String currentView = "list";
+    private boolean showOffers;
 
     public PostController(PostView selectedPostView, PostView mySelectedPostView, PostListView postListView,
             MyPostListView myPostListView, PostCreateView postCreateView, ViewManager viewManager) {
+        this.selectedPostView = selectedPostView;
+        this.mySelectedPostView = mySelectedPostView;
+        this.postListView = postListView;
+        this.myPostListView = myPostListView;
+        this.postCreateView = postCreateView;
+
         selectedPostView.setPostController(this);
         mySelectedPostView.setPostController(this);
         postListView.setPostController(this);
@@ -23,29 +48,146 @@ public class PostController {
 
     public void setLoggedInUser(User user) {
         loggedInUser = user;
+        showOffers = user.getRole() == UserRole.VOLUNTEER;
+        postListView.setIsOffers(showOffers);
+        myPostListView.setIsOffers(!showOffers);
+        postCreateView.setIsOffers(!showOffers);
+        try {
+            mainListSetPosts();
+            myListSetPosts();
+        } catch (SQLException e) {
+            postListView.setError("Error loading posts: " + e.getMessage());
+            myPostListView.setError("Error loading posts: " + e.getMessage());
+        }
+    }
+
+    private boolean isMainPageOk(int newPage) throws SQLException {
+        return newPage >= 0 && newPage < Post.getNumberOfPages(showOffers ? "offer" : "mission");
+    }
+
+    private boolean isMyPageOk(int newPage) throws SQLException {
+        return newPage >= 0 && newPage < Post.getMyNumberOfPages(showOffers ? "offer" : "mission", loggedInUser);
     }
 
     public void mainListNextPage() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'mainListNextPage'");
+        try {
+            if (isMainPageOk(mainPage + 1)) {
+                mainPage++;
+                mainListSetPosts();
+            } else {
+                postListView.setError("No more pages");
+            }
+        } catch (SQLException e) {
+            postListView.setError("Error loading posts: " + e.getMessage());
+        }
     }
 
     public void mainListPreviousPage() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'mainListPreviousPage'");
+        try {
+            if (isMainPageOk(mainPage - 1)) {
+                mainPage--;
+                mainListSetPosts();
+            } else {
+                postListView.setError("No more pages");
+            }
+        } catch (SQLException e) {
+            postListView.setError("Error loading posts: " + e.getMessage());
+        }
     }
 
     public void myListNextPage() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'mainListNextPage'");
+        try {
+            if (isMyPageOk(mainPage + 1)) {
+                mainPage++;
+                myListSetPosts();
+            } else {
+                myPostListView.setError("No more pages");
+            }
+        } catch (SQLException e) {
+            myPostListView.setError("Error loading posts: " + e.getMessage());
+        }
     }
 
     public void myListPreviousPage() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'mainListPreviousPage'");
+        try {
+            if (isMyPageOk(mainPage - 1)) {
+                mainPage--;
+                myListSetPosts();
+            } else {
+                myPostListView.setError("No more pages");
+            }
+        } catch (SQLException e) {
+            myPostListView.setError("Error loading posts: " + e.getMessage());
+        }
     }
 
     public void togglePostCreate() {
-        viewManager.showPostCreateView();
+        if (currentView.equals("list")) {
+            viewManager.showPostCreateView();
+            currentView = "create";
+        } else {
+            viewManager.showPostListView();
+            currentView = "list";
+        }
+    }
+
+    private void mainListSetPosts() throws SQLException {
+        List<Post> posts = new ArrayList<>();
+        if (showOffers) {
+            ArrayList<Offer> offers = Offer.getOffers(mainPage);
+            for (Offer offer : offers) {
+                posts.add(offer);
+            }
+        } else {
+            ArrayList<Mission> missions = Mission.getMissions(mainPage);
+            for (Mission mission : missions) {
+                posts.add(mission);
+            }
+        }
+        postListView.showPosts(posts);
+    }
+
+    private void myListSetPosts() throws SQLException {
+        List<Post> posts = new ArrayList<>();
+        if (showOffers) {
+            ArrayList<Offer> offers = Offer.getMyOffers(loggedInUser, mainPage);
+            for (Offer offer : offers) {
+                posts.add(offer);
+            }
+        } else {
+            ArrayList<Mission> missions = Mission.getMyMissions(loggedInUser, mainPage);
+            for (Mission mission : missions) {
+                posts.add(mission);
+            }
+        }
+        myPostListView.showPosts(posts);
+    }
+
+    public void selectPost(Post post) {
+        if (post == null) {
+            return;
+        }
+        selectedPostView.showPost(post);
+    }
+
+    public void selectMyPost(Post post) {
+        if (post == null) {
+            return;
+        }
+        mySelectedPostView.showPost(post);
+    }
+
+    public void createPost(String title, String content, String location) {
+        try {
+            if (showOffers) {
+                new Offer(loggedInUser, title, content, location).toDatabase();
+            } else {
+                new Mission(loggedInUser, title, content, location).toDatabase();
+            }
+            viewManager.showPostListView();
+        } catch (SQLException e) {
+            postCreateView.setError("Error creating post: " + e.getMessage());
+        }
+        JOptionPane.showMessageDialog(null, "Post created successfully");
     }
 }

@@ -34,6 +34,7 @@ public class Main {
             postCreateView,
             myPostListView
         );
+        frame.add(viewManager);
 
         // Create the controllers
         PostController postController = new PostController(
@@ -49,6 +50,8 @@ public class Main {
             viewManager,
             postController
         );
+
+        viewManager.showLoginView();
         
         frame.pack();
         frame.setVisible(true);

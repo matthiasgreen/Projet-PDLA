@@ -79,4 +79,17 @@ public class Post {
         int count = result.getInt(1);
         return (int) Math.ceil((double) count / PAGE_SIZE) - 1;
     }
+
+    public static int getMyNumberOfPages(String type, User user) throws SQLException {
+        Connection connection = DatabaseConnection.getConnection();
+        PreparedStatement statement = connection.prepareStatement(
+            "SELECT COUNT(*) FROM posts WHERE type=? AND user_id=?"
+        );
+        statement.setString(1, type);
+        statement.setInt(2, user.id);
+        ResultSet result = statement.executeQuery();
+        result.next();
+        int count = result.getInt(1);
+        return (int) Math.ceil((double) count / PAGE_SIZE) - 1;
+    }
 }
