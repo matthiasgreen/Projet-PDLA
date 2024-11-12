@@ -185,6 +185,7 @@ public class PostController {
                 new Mission(loggedInUser, title, content, location).toDatabase();
             }
             viewManager.showPostListView();
+            myListSetPosts();
         } catch (SQLException e) {
             postCreateView.setError("Error creating post: " + e.getMessage());
         }
