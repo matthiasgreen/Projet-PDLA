@@ -37,10 +37,6 @@ public class PostListView extends JPanel {
     }
 
     public PostListView(PostView selectedPostView) {
-        postJList = new JList<>();
-        postJList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        postJList.setCellRenderer(new PostListCellRenderer(true));
-
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -58,11 +54,15 @@ public class PostListView extends JPanel {
         c.gridy++;
         add(titleLabel, c);
 
+        postJList = new JList<>();
+        postJList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        postJList.setCellRenderer(new PostListCellRenderer(true));
+        postJList.setMinimumSize(new Dimension(400, 400));
+        postJList.setFixedCellHeight(50);
         c.gridy++;
-        add(postJList, c);
 
         postListScrollPane = new JScrollPane(postJList);
-        postListScrollPane.setPreferredSize(new Dimension(800, 600));
+        postListScrollPane.setPreferredSize(new Dimension(400, 400));
         c.gridy++;
         add(postListScrollPane, c);
 
