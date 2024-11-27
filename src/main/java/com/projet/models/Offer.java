@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
+
 public class Offer extends Post {
     public Offer(User author, String title, String content, String location) {
         super(author, title, content, location);
@@ -17,11 +18,36 @@ public class Offer extends Post {
         super(id, author, title, content, location, createdAt);
     }
 
+    public static Offer getOffer(int id) throws SQLException {
+        ResultSet result = getPost(id);
+        if (!result.next()) {
+            return null;
+        }
+        User author = new User(
+            result.getInt("user_id"),
+            result.getString("username"),
+            UserRole.fromString(result.getString("role"))
+        );
+        return new Offer(
+            result.getInt("id"),
+            author,
+            result.getString("title"),
+            result.getString("content"),
+            result.getString("location"),
+            result.getDate("created_at")
+        );
+    }
+
     public void toDatabase() throws SQLException {
         PreparedStatement statement = prepareInsertStatement();
         statement.setString(1, "offer");
-        statement.setString(2, "validated");
+        statement.setString(2, MissionStatus.VALIDATED.toString().toLowerCase());
         statement.executeUpdate();
+        ResultSet generatedKeys = statement.getGeneratedKeys();
+        if (!generatedKeys.next()) {
+            throw new SQLException("Failed to retrieve the generated key");
+        }
+        id = generatedKeys.getInt(1);
         statement.close();
     }
 
