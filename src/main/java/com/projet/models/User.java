@@ -2,6 +2,7 @@ package com.projet.models;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 
 import com.projet.database.DatabaseConnection;
 import com.projet.database.IncorrectCredentialsException;
@@ -57,8 +58,8 @@ public class User {
         insertQuery.setString(3, role.toString());
         try {
             insertQuery.executeUpdate();
-        } catch (SQLException e) {
-            if (e.getErrorCode() == 1169) {
+        } catch (SQLIntegrityConstraintViolationException e) {
+            if (e.getErrorCode() == 1062) {
                 throw new UserAlreadyExistsException("User already exists");
             }
             throw e;

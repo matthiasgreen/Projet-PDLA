@@ -38,9 +38,4 @@ public class DatabaseConnection {
         }
         return connection;
     }
-
-    // Handle the exception appropriately
-    public static void main(String[] args) {
-        getConnection();
-    }
 }
