@@ -53,6 +53,9 @@ public class PostController {
         postListView.setIsOffers(showOffers);
         myPostListView.setIsOffers(!showOffers);
         postCreateView.setIsOffers(!showOffers);
+        postListView.setValidatingView(user);
+        
+
         try {
             mainListSetPosts();
             myListSetPosts();
@@ -61,7 +64,6 @@ public class PostController {
             myPostListView.setError("Error loading posts: " + e.getMessage());
         }
     }
-
     private boolean isMainPageOk(int newPage) throws SQLException {
         return newPage >= 0 && newPage < (showOffers ? Offer.getNumberOfPages() : Mission.getNumberOfPages());
     }
@@ -194,6 +196,21 @@ public class PostController {
     }
 
     public void ValidateMission(Mission mission){
-        mission.UpdateStatus(MissionStatus.VALIDATED);
+        try {
+            mission.validate();
+            mainListSetPosts();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     };
+
+    public void RefuseMission(Mission mission, String refusalReason){
+        try {
+            mission.refuse(refusalReason);
+            mainListSetPosts();
+        } catch (SQLException e) {
+            e.printStackTrace();
+}
+
+}
 }

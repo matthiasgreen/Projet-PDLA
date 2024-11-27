@@ -9,6 +9,9 @@ import javax.swing.*;
 import com.projet.controllers.PostController;
 import com.projet.models.Mission;
 import com.projet.models.Post;
+import com.projet.models.User;
+import com.projet.models.UserRole;
+import com.projet.swingComponents.CustomTextField;
 import com.projet.swingComponents.PostListCellRenderer;
 
 public class PostListView extends JPanel {
@@ -20,9 +23,13 @@ public class PostListView extends JPanel {
     private JLabel errorLabel;
     private JButton pageBackwardButton;
     private JButton pageForwardButton;
-    private JButton ValidatingButton;
+    private JButton validatingButton;
+    private JButton RefusingButton;
     protected JButton createPostButton; 
     private JScrollPane postListScrollPane;
+    private CustomTextField JustificationValidator;
+
+    private User loggedInUser;
     
     protected JList<Post> postJList;
 
@@ -83,13 +90,22 @@ public class PostListView extends JPanel {
         add(pageForwardButton, c);
 
 
-        //on ajoute un bouton de valisation que seul les valideurs voient 
-        ValidatingButton = new JButton("Validate");
-        ValidatingButton.addActionListener(e -> postController.ValidateMission((Mission) postJList.getSelectedValue()));
+        //on ajoute un bouton de validation que seul les valideurs voient
+        validatingButton = new JButton("Validate");
+        validatingButton.addActionListener(e -> postController.ValidateMission((Mission) postJList.getSelectedValue()));
         c.gridx = 0;
         c.gridy++;
-        add(ValidatingButton, c);
+        add(validatingButton, c);
+        validatingButton.setVisible(false);
 
+        RefusingButton = new JButton("Refuse");
+        RefusingButton.addActionListener(e -> postController.RefuseMission((Mission) postJList.getSelectedValue(), JustificationValidator.getText()));
+
+        JustificationValidator = new CustomTextField("Justification", new JTextField());
+        c.gridx = 1;
+        c.gridy++;
+        add(JustificationValidator, c);
+        JustificationValidator.setVisible(false);
 
         createPostButton = new JButton("Create post");
         createPostButton.addActionListener(new ActionListener() {
@@ -110,6 +126,14 @@ public class PostListView extends JPanel {
                 postController.selectPost(selectedPost);
             }
         });
+    }
+
+    public void setValidatingView(User user){
+        this.loggedInUser = user;
+        if (user.getRole() == UserRole.VALIDATOR){
+            validatingButton.setVisible(true);
+            JustificationValidator.setVisible(true);
+        }
     }
 
     protected void nextPage() {

@@ -36,6 +36,7 @@ public class PostView extends JPanel {
             "Created by " + post.author.username + " at " + post.createdAt.toString()
         );
     }
+    
 
     public void setPostController(PostController postController) {
         this.postController = postController;
