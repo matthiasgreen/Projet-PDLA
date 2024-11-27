@@ -24,16 +24,43 @@ public class Mission extends Post {
         this.refusalReason = refusalReason;
     }
 
+    public static Mission getMission(int id) throws SQLException {
+        ResultSet result = getPost(id);
+        if (!result.next()) {
+            return null;
+        }
+        User author = new User(
+            result.getInt("user_id"),
+            result.getString("username"),
+            UserRole.fromString(result.getString("role"))
+        );
+        return new Mission(
+            result.getInt("id"),
+            author,
+            result.getString("title"),
+            result.getString("content"),
+            result.getString("location"),
+            result.getDate("created_at"),
+            MissionStatus.valueOf(result.getString("status").toUpperCase()),
+            result.getString("refusal_reason")
+        );
+    }
+
     public void toDatabase() throws SQLException {
         PreparedStatement statement = prepareInsertStatement();
         statement.setString(1, "mission");
         statement.setString(2, status.toString().toLowerCase());
         statement.executeUpdate();
+        ResultSet generatedKeys = statement.getGeneratedKeys();
+        if (!generatedKeys.next()) {
+            throw new SQLException("Failed to retrieve the generated key");
+        }
+        id = generatedKeys.getInt(1);
         statement.close();
     }
 
     public void validate() throws SQLException {
-        this.status = MissionStatus.VALIDATED;
+        status = MissionStatus.VALIDATED;
         PreparedStatement statement = DatabaseConnection.getConnection().prepareStatement(
             "UPDATE posts SET status = ? WHERE id = ?"
         );

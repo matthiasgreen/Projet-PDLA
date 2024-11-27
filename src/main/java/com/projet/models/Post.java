@@ -7,7 +7,7 @@ import com.projet.database.DatabaseConnection;
 public class Post {
     public static int PAGE_SIZE = 10;
 
-    public int id;
+    public Integer id = null;
     public User author;
     public String title; 
     public String content;
@@ -36,13 +36,23 @@ public class Post {
 
         PreparedStatement statement = connection.prepareStatement(
             "INSERT INTO posts (type, status, user_id, title, content, location)"
-            + "VALUES (?, ?, ?, ?, ?, ?)"
+            + "VALUES (?, ?, ?, ?, ?, ?)",
+            PreparedStatement.RETURN_GENERATED_KEYS
         );
         statement.setInt(3, author.id);
         statement.setString(4, title);
         statement.setString(5, content);
         statement.setString(6, location);
         return statement;
+    }
+
+    public static ResultSet getPost(int id) throws SQLException {
+        Connection connection = DatabaseConnection.getConnection();
+        PreparedStatement statement = connection.prepareStatement(
+            "SELECT * FROM posts LEFT JOIN users ON user_id=users.id WHERE posts.id=?"
+        );
+        statement.setInt(1, id);
+        return statement.executeQuery();
     }
 
     public static ResultSet getPosts(PostType type, int page) throws SQLException {
@@ -77,7 +87,7 @@ public class Post {
         ResultSet result = statement.executeQuery();
         result.next();
         int count = result.getInt(1);
-        return (int) Math.ceil((double) count / PAGE_SIZE) - 1;
+        return (int) Math.ceil((double) count / PAGE_SIZE);
     }
 
     public static int getMyNumberOfPages(PostType type, User user) throws SQLException {
@@ -90,6 +100,6 @@ public class Post {
         ResultSet result = statement.executeQuery();
         result.next();
         int count = result.getInt(1);
-        return (int) Math.ceil((double) count / PAGE_SIZE) - 1;
+        return (int) Math.ceil((double) count / PAGE_SIZE);
     }
 }
