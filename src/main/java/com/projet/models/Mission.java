@@ -71,7 +71,7 @@ public class Mission extends Post {
     }
 
     public void refuse(String refusalReason) throws SQLException {
-        this.status = MissionStatus.REFUSED;
+        status = MissionStatus.REFUSED;
         this.refusalReason = refusalReason;
         PreparedStatement statement = DatabaseConnection.getConnection().prepareStatement(
             "UPDATE posts SET status = ?, refusal_reason = ? WHERE id = ?"
@@ -131,9 +131,7 @@ public class Mission extends Post {
     public MissionStatus getMissionStatus() {
         return this.status;
     }
-    public void UpdateStatus(MissionStatus status) {
-        this.status = status;
-    }
+
     public static int getNumberOfPages() throws SQLException {
         return Post.getNumberOfPages(PostType.MISSION);
     }
