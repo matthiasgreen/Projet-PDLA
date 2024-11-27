@@ -57,7 +57,7 @@ public class Mission extends Post {
 
     public static ArrayList<Mission> getMissions(int page) throws SQLException {
         ArrayList<Mission> missions = new ArrayList<>();
-        ResultSet result = getPosts("mission", page);
+        ResultSet result = getPosts(PostType.MISSION, page);
         HashMap<Integer, User> users = new HashMap<>();
 
         while (result.next()) {
@@ -85,7 +85,7 @@ public class Mission extends Post {
 
     public static ArrayList<Mission> getMyMissions(User user, int page) throws SQLException {
         ArrayList<Mission> missions = new ArrayList<>();
-        ResultSet result = getMyPosts("mission", user, page);
+        ResultSet result = getMyPosts(PostType.MISSION, user, page);
         while (result.next()) {
             Mission mission = new Mission(
                 result.getInt("id"),
@@ -107,7 +107,11 @@ public class Mission extends Post {
     public void UpdateStatus(MissionStatus status) {
         this.status = status;
     }
-    public static int getNumberOfPages(String type) throws SQLException {
-        return Post.getNumberOfPages("mission");
+    public static int getNumberOfPages() throws SQLException {
+        return Post.getNumberOfPages(PostType.MISSION);
+    }
+
+    public static int getMyNumberOfPages(User user) throws SQLException {
+        return getMyNumberOfPages(PostType.MISSION, user);
     }
 }

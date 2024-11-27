@@ -45,47 +45,47 @@ public class Post {
         return statement;
     }
 
-    public static ResultSet getPosts(String type, int page) throws SQLException {
+    public static ResultSet getPosts(PostType type, int page) throws SQLException {
         Connection connection = DatabaseConnection.getConnection();
         PreparedStatement statement = connection.prepareStatement(
             "SELECT * FROM posts LEFT JOIN users ON user_id=users.id WHERE type=? ORDER BY created_at DESC LIMIT ? OFFSET ?"
         );
-        statement.setString(1, type);
+        statement.setString(1, type.toString().toLowerCase());
         statement.setInt(2, PAGE_SIZE);
         statement.setInt(3, page * PAGE_SIZE);
         return statement.executeQuery();
     }
 
-    public static ResultSet getMyPosts(String type, User user, int page) throws SQLException {
+    public static ResultSet getMyPosts(PostType type, User user, int page) throws SQLException {
         Connection connection = DatabaseConnection.getConnection();
         PreparedStatement statement = connection.prepareStatement(
             "SELECT * FROM posts LEFT JOIN users ON user_id=users.id WHERE type=? AND user_id=? ORDER BY created_at DESC LIMIT ? OFFSET ?"
         );
-        statement.setString(1, type);
+        statement.setString(1, type.toString().toLowerCase());
         statement.setInt(2, user.id);
         statement.setInt(3, PAGE_SIZE);
         statement.setInt(4, page * PAGE_SIZE);
         return statement.executeQuery();
     }
 
-    public static int getNumberOfPages(String type) throws SQLException {
+    public static int getNumberOfPages(PostType type) throws SQLException {
         Connection connection = DatabaseConnection.getConnection();
         PreparedStatement statement = connection.prepareStatement(
             "SELECT COUNT(*) FROM posts WHERE type=?"
         );
-        statement.setString(1, type);
+        statement.setString(1, type.toString().toLowerCase());
         ResultSet result = statement.executeQuery();
         result.next();
         int count = result.getInt(1);
         return (int) Math.ceil((double) count / PAGE_SIZE) - 1;
     }
 
-    public static int getMyNumberOfPages(String type, User user) throws SQLException {
+    public static int getMyNumberOfPages(PostType type, User user) throws SQLException {
         Connection connection = DatabaseConnection.getConnection();
         PreparedStatement statement = connection.prepareStatement(
             "SELECT COUNT(*) FROM posts WHERE type=? AND user_id=?"
         );
-        statement.setString(1, type);
+        statement.setString(1, type.toString());
         statement.setInt(2, user.id);
         ResultSet result = statement.executeQuery();
         result.next();

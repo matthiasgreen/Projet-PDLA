@@ -63,11 +63,11 @@ public class PostController {
     }
 
     private boolean isMainPageOk(int newPage) throws SQLException {
-        return newPage >= 0 && newPage < Post.getNumberOfPages(showOffers ? "offer" : "mission");
+        return newPage >= 0 && newPage < (showOffers ? Offer.getNumberOfPages() : Mission.getNumberOfPages());
     }
 
     private boolean isMyPageOk(int newPage) throws SQLException {
-        return newPage >= 0 && newPage < Post.getMyNumberOfPages(showOffers ? "offer" : "mission", loggedInUser);
+        return newPage >= 0 && newPage < (showOffers ? Mission.getMyNumberOfPages(loggedInUser) : Offer.getMyNumberOfPages(loggedInUser));
     }
 
     public void mainListNextPage() {

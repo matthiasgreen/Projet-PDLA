@@ -27,7 +27,7 @@ public class Offer extends Post {
 
     public static ArrayList<Offer> getOffers(int page) throws SQLException {
         ArrayList<Offer> offers = new ArrayList<>();
-        ResultSet result = getPosts("offer", page);
+        ResultSet result = getPosts(PostType.OFFER, page);
         HashMap<Integer, User> users = new HashMap<>();
 
         while (result.next()) {
@@ -50,7 +50,7 @@ public class Offer extends Post {
 
     public static ArrayList<Offer> getMyOffers(User user, int page) throws SQLException {
         ArrayList<Offer> offers = new ArrayList<>();
-        ResultSet result = getMyPosts("offer", user, page);
+        ResultSet result = getMyPosts(PostType.OFFER, user, page);
 
         while (result.next()) {
             int id = result.getInt("id");
@@ -64,7 +64,11 @@ public class Offer extends Post {
         return offers;
     }
 
-    public static int getNumberOfPages(String type) throws SQLException {
-        return Post.getNumberOfPages("offer");
+    public static int getNumberOfPages() throws SQLException {
+        return Post.getNumberOfPages(PostType.OFFER);
+    }
+
+    public static int getMyNumberOfPages(User user) throws SQLException {
+        return Post.getMyNumberOfPages(PostType.OFFER, user);
     }
 }
