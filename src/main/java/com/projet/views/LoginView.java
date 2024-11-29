@@ -89,7 +89,7 @@ public class LoginView extends JPanel {
                 } else if (iSvalidator.isSelected()) {
                     role = UserRole.VALIDATOR;
                 } else {
-                    role = UserRole.USER;
+                    role = UserRole.USER_IN_NEED;
                 }
                 userController.signUp(usernameField.getText(), passwordField.getText(), role);
             }

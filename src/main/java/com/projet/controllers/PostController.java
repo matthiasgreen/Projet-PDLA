@@ -1,17 +1,17 @@
 package com.projet.controllers;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import com.projet.models.AbstractUser;
 import com.projet.models.Mission;
-import com.projet.models.MissionStatus;
 import com.projet.models.Offer;
 import com.projet.models.Post;
-import com.projet.models.User;
-import com.projet.models.UserRole;
+import com.projet.models.PostType;
+import com.projet.models.UserInNeed;
+import com.projet.models.Volunteer;
 import com.projet.views.MyPostListView;
 import com.projet.views.PostCreateView;
 import com.projet.views.PostListView;
@@ -26,10 +26,9 @@ public class PostController {
     private PostCreateView postCreateView;
     private ViewManager viewManager;
     
-    private User loggedInUser;
+    private AbstractUser loggedInUser;
     private int mainPage = 0;
     private String currentView = "list";
-    private boolean showOffers;
 
     public PostController(PostView selectedPostView, PostView mySelectedPostView, PostListView postListView,
             MyPostListView myPostListView, PostCreateView postCreateView, ViewManager viewManager) {
@@ -47,13 +46,12 @@ public class PostController {
         this.viewManager = viewManager;
     }
 
-    public void setLoggedInUser(User user) {
+    public void setLoggedInUser(AbstractUser user) {
         loggedInUser = user;
-        showOffers = user.getRole() == UserRole.USER;
-        postListView.setIsOffers(showOffers);
-        myPostListView.setIsOffers(!showOffers);
-        postCreateView.setIsOffers(!showOffers);
-        postListView.setValidatingView(user);
+        postListView.setPostType(user.getMainListPostType());
+        myPostListView.setPostType(user.getCreatePostType());
+        postCreateView.setPostType(user.getCreatePostType());
+        postListView.showValidationOptions(user.canValidateMissions());
         
 
         try {
@@ -65,11 +63,11 @@ public class PostController {
         }
     }
     private boolean isMainPageOk(int newPage) throws SQLException {
-        return newPage >= 0 && newPage < (showOffers ? Offer.getNumberOfPages() : Mission.getNumberOfPages());
+        return newPage >= 0 && newPage < (loggedInUser.getMainListPostType() == PostType.OFFER ? Offer.getNumberOfPages() : Mission.getNumberOfPages());
     }
 
     private boolean isMyPageOk(int newPage) throws SQLException {
-        return newPage >= 0 && newPage < (showOffers ? Mission.getMyNumberOfPages(loggedInUser) : Offer.getMyNumberOfPages(loggedInUser));
+        return newPage >= 0 && newPage < (loggedInUser.getCreatePostType() == PostType.MISSION ? Mission.getMyNumberOfPages((UserInNeed)loggedInUser) : Offer.getMyNumberOfPages((Volunteer)loggedInUser));
     }
 
     public void mainListNextPage() {
@@ -135,34 +133,21 @@ public class PostController {
     }
 
     private void mainListSetPosts() throws SQLException {
-        List<Post> posts = new ArrayList<>();
-        if (showOffers) {
-            ArrayList<Offer> offers = Offer.getOffers(mainPage);
-            for (Offer offer : offers) {
-                posts.add(offer);
-            }
-        } else {
-            ArrayList<Mission> missions = Mission.getMissions(mainPage);
-            for (Mission mission : missions) {
-                posts.add(mission);
-            }
-        }
+
+        List<? extends Post> posts = (
+            loggedInUser.getMainListPostType() == PostType.OFFER ?
+            Offer.getOffers(mainPage)
+            : Mission.getMissions(mainPage)
+        );
         postListView.showPosts(posts);
     }
 
     private void myListSetPosts() throws SQLException {
-        List<Post> posts = new ArrayList<>();
-        if (!showOffers) {
-            ArrayList<Offer> offers = Offer.getMyOffers(loggedInUser, mainPage);
-            for (Offer offer : offers) {
-                posts.add(offer);
-            }
-        } else {
-            ArrayList<Mission> missions = Mission.getMyMissions(loggedInUser, mainPage);
-            for (Mission mission : missions) {
-                posts.add(mission);
-            }
-        }
+        List<? extends Post> posts = (
+            loggedInUser.getCreatePostType() == PostType.MISSION ?
+            Mission.getMyMissions((UserInNeed)loggedInUser, mainPage)
+            : Offer.getMyOffers((Volunteer)loggedInUser, mainPage)
+        );
         myPostListView.showPosts(posts);
     }
 
@@ -182,10 +167,10 @@ public class PostController {
 
     public void createPost(String title, String content, String location) {
         try {
-            if (!showOffers) {
-                new Offer(loggedInUser, title, content, location).toDatabase();
+            if (loggedInUser.getCreatePostType() == PostType.OFFER) {
+                new Offer((Volunteer)loggedInUser, title, content, location).toDatabase();
             } else {
-                new Mission(loggedInUser, title, content, location).toDatabase();
+                new Mission((UserInNeed)loggedInUser, title, content, location).toDatabase();
             }
             viewManager.showPostListView();
             myListSetPosts();
@@ -195,7 +180,7 @@ public class PostController {
         JOptionPane.showMessageDialog(null, "Post created successfully");
     }
 
-    public void ValidateMission(Mission mission){
+    public void validateMission(Mission mission){
         try {
             mission.validate();
             mainListSetPosts();
@@ -204,7 +189,7 @@ public class PostController {
         }
     };
 
-    public void RefuseMission(Mission mission, String refusalReason){
+    public void refuseMission(Mission mission, String refusalReason){
         try {
             mission.refuse(refusalReason);
             mainListSetPosts();

@@ -4,7 +4,8 @@ package com.projet.views;
 import javax.swing.*;
 
 import com.projet.controllers.PostController;
-import com.projet.models.User;
+import com.projet.models.PostType;
+import com.projet.models.UserInNeed;
 import com.projet.swingComponents.CustomTextField;
 
 public class PostCreateView extends JPanel {
@@ -18,7 +19,7 @@ public class PostCreateView extends JPanel {
     private JButton cancelButton;
     private PostController postController;
 
-    public User loggedInUser;
+    public UserInNeed loggedInUser;
 
     public PostCreateView(boolean isOffers) {
         this.isOffers = isOffers;
@@ -56,9 +57,10 @@ public class PostCreateView extends JPanel {
         add(errorLabel);
     }
 
-    public void setIsOffers(boolean isOffers) {
-        this.isOffers = isOffers;
-        titleLabel.setText(isOffers ? "Create a new offer" : "Create a new mission");
+    public void setPostType(PostType postType) {
+        titleLabel.setText(
+            "Create a new " + postType.toString().toLowerCase() + "."
+        );
     }
 
     public void setPostController(PostController postController) {

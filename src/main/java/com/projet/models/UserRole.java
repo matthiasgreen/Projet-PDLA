@@ -1,7 +1,7 @@
 package com.projet.models;
 
 public enum UserRole {
-    USER,
+    USER_IN_NEED,
     VOLUNTEER,
     VALIDATOR;
 

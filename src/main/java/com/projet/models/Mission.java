@@ -1,133 +1,72 @@
 package com.projet.models;
 
 import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 
-import com.projet.database.DatabaseConnection;
+import com.projet.database.SqlUtility;
 
 public class Mission extends Post {
     public MissionStatus status;
     public String refusalReason;
 
-    public Mission(User author, String title, String content, String location) {
+    public Mission(UserInNeed author, String title, String content, String location) {
         super(author, title, content, location);
         this.status = MissionStatus.PENDING;
     }
 
-    Mission(int id, User author, String title, String content, String location, Date createdAt, MissionStatus status, String refusalReason) {
+    Mission(int id, UserInNeed author, String title, String content, String location, Date createdAt, MissionStatus status, String refusalReason) {
         super(id, author, title, content, location, createdAt);
         this.status = status;
         this.refusalReason = refusalReason;
     }
 
     public static Mission getMission(int id) throws SQLException {
-        ResultSet result = getPost(id);
-        if (!result.next()) {
-            return null;
+        Post post = getPost(id);
+        if (post instanceof Mission) {
+            return (Mission) post;
         }
-        User author = new User(
-            result.getInt("user_id"),
-            result.getString("username"),
-            UserRole.fromString(result.getString("role"))
-        );
-        return new Mission(
-            result.getInt("id"),
-            author,
-            result.getString("title"),
-            result.getString("content"),
-            result.getString("location"),
-            result.getDate("created_at"),
-            MissionStatus.valueOf(result.getString("status").toUpperCase()),
-            result.getString("refusal_reason")
-        );
+        return null;
     }
 
     public void toDatabase() throws SQLException {
-        PreparedStatement statement = prepareInsertStatement();
-        statement.setString(1, "mission");
-        statement.setString(2, status.toString().toLowerCase());
-        statement.executeUpdate();
-        ResultSet generatedKeys = statement.getGeneratedKeys();
-        if (!generatedKeys.next()) {
-            throw new SQLException("Failed to retrieve the generated key");
-        }
-        id = generatedKeys.getInt(1);
-        statement.close();
+        super.toDatabase();
     }
 
     public void validate() throws SQLException {
         status = MissionStatus.VALIDATED;
-        PreparedStatement statement = DatabaseConnection.getConnection().prepareStatement(
-            "UPDATE posts SET status = ? WHERE id = ?"
+        SqlUtility.executeUpdate(
+            "UPDATE posts SET status = ? WHERE id = ?",
+            status.toString(),
+            id
         );
-        statement.setString(1, status.toString().toLowerCase());
-        statement.setInt(2, id);
-        statement.executeUpdate();
-        statement.close();
     }
 
     public void refuse(String refusalReason) throws SQLException {
         status = MissionStatus.REFUSED;
         this.refusalReason = refusalReason;
-        PreparedStatement statement = DatabaseConnection.getConnection().prepareStatement(
-            "UPDATE posts SET status = ?, refusal_reason = ? WHERE id = ?"
+
+        SqlUtility.executeUpdate(
+            "UPDATE posts SET status = ?, refusal_reason = ? WHERE id = ?",
+            status.toString(),
+            refusalReason,
+            id
         );
-        statement.setString(1, status.toString().toLowerCase());
-        statement.setString(2, refusalReason);
-        statement.setInt(3, id);
-        statement.executeUpdate();
     }
 
-    public static ArrayList<Mission> getMissions(int page) throws SQLException {
-        ArrayList<Mission> missions = new ArrayList<>();
-        ResultSet result = getPosts(PostType.MISSION, page);
-        HashMap<Integer, User> users = new HashMap<>();
-
-        while (result.next()) {
-            int userId = result.getInt("user_id");
-            User author = users.get(userId);
-
-            if (author == null) {
-                author = new User(userId, result.getString("username"), UserRole.fromString(result.getString("role")));
-                users.put(userId, author);
-            }
-            Mission mission = new Mission(
-                result.getInt("id"),
-                author,
-                result.getString("title"),
-                result.getString("content"),
-                result.getString("location"),
-                result.getDate("created_at"),
-                MissionStatus.valueOf(result.getString("status").toUpperCase()),
-                result.getString("refusal_reason")
-            );
-            missions.add(mission);
-        }
-        return missions;
+    @SuppressWarnings("unchecked")
+    public static List<Mission> getMissions(int page) throws SQLException {
+        List<? extends Post> posts = getPosts(PostType.MISSION, page);
+        // All the posts are missions, we just have to cast
+        return (List<Mission>) posts;
     }
 
-    public static ArrayList<Mission> getMyMissions(User user, int page) throws SQLException {
-        ArrayList<Mission> missions = new ArrayList<>();
-        ResultSet result = getMyPosts(PostType.MISSION, user, page);
-        while (result.next()) {
-            Mission mission = new Mission(
-                result.getInt("id"),
-                user,
-                result.getString("title"),
-                result.getString("content"),
-                result.getString("location"),
-                result.getDate("created_at"),
-                MissionStatus.valueOf(result.getString("status").toUpperCase()),
-                result.getString("refusal_reason")
-            );
-            missions.add(mission);
-        }
-        return missions;
+    @SuppressWarnings("unchecked")
+    public static List<Mission> getMyMissions(UserInNeed user, int page) throws SQLException {
+        List<? extends Post> posts = getMyPosts(PostType.MISSION, user, page);
+        return (List<Mission>) posts;
     }
+
     public MissionStatus getMissionStatus() {
         return this.status;
     }
@@ -136,7 +75,7 @@ public class Mission extends Post {
         return Post.getNumberOfPages(PostType.MISSION);
     }
 
-    public static int getMyNumberOfPages(User user) throws SQLException {
+    public static int getMyNumberOfPages(UserInNeed user) throws SQLException {
         return getMyNumberOfPages(PostType.MISSION, user);
     }
 }

@@ -3,7 +3,7 @@ CREATE TABLE users (
     id INT PRIMARY KEY AUTO_INCREMENT,
     username VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
-    role ENUM("user", "volunteer", "validator") NOT NULL,
+    role ENUM("USER_IN_NEED", "VOLUNTEER", "VALIDATOR") NOT NULL,
     UNIQUE(username)
 );
 
@@ -14,8 +14,8 @@ CREATE TABLE posts (
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
 
-    type ENUM("offer", "mission") NOT NULL,
-    status ENUM("pending", "validated", "refused", "done") NOT NULL,
+    type ENUM("OFFER", "MISSION") NOT NULL,
+    status ENUM("PENDING", "VALIDATED", "REFUSED", "DONE") NOT NULL,
     refusal_reason TEXT,
     location VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,

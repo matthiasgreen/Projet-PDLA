@@ -1,8 +1,11 @@
 package com.projet.models;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -13,7 +16,7 @@ import com.projet.database.UserAlreadyExistsException;
 
 public class OfferTest {
     private Connection dbConnection;
-    private User author = new User("test", "test", UserRole.USER);
+    private Volunteer author = new Volunteer("test", "test");
 
     @Before
     public void setUp() throws SQLException, UserAlreadyExistsException {
@@ -39,40 +42,42 @@ public class OfferTest {
     public void testToDatabase() throws SQLException {
         Offer offer = new Offer(author, "title", "content", "location");
         offer.toDatabase();
-        assert offer.id != null;
+        assertNotNull(offer.id);
         Offer offer2 = Offer.getOffer(offer.id);
-        assert offer2 != null;
-        assert offer2.id == offer.id;
-        assert offer2.author.id == author.id;
-        assert offer2.title.equals(offer.title);
+        assertNotNull(offer2);
+        assertEquals(offer.id, offer2.id);
+        assertEquals(author.id, offer2.author.id);
+        assertEquals(offer.title, offer2.title);
     }
 
     @Test
     public void testGetOffers() throws SQLException {
         Offer offer = new Offer(author, "title", "content", "location");
         offer.toDatabase();
-        ArrayList<Offer> offers = Offer.getOffers(0);
-        assert offers.size() == 1;
-        assert offers.get(0).id == offer.id;
+        List<Offer> offers = Offer.getOffers(0);
+        assertNotNull(offers);
+        assertEquals(1, offers.size());
+        assertEquals(offer.id, offers.get(0).id);
     }
 
     @Test
     public void testGetMyOffers() throws SQLException {
         Offer offer = new Offer(author, "title", "content", "location");
         offer.toDatabase();
-        ArrayList<Offer> offers = Offer.getMyOffers(author, 0);
-        assert offers.size() == 1;
-        assert offers.get(0).id == offer.id;
+        List<Offer> offers = Offer.getMyOffers(author, 0);
+        assertNotNull(offers);
+        assertEquals(1, offers.size());
+        assertEquals(offer.id, offers.get(0).id);
     }
 
     @Test
     public void testGetNumberOfPages() throws SQLException {
         Offer offer = new Offer(author, "title", "content", "location");
         offer.toDatabase();
-        assert Offer.getNumberOfPages() == 1;
+        assertEquals(1, Offer.getNumberOfPages());
         for (int i = 0; i < Post.PAGE_SIZE; i++) {
             new Offer(author, "title", "content", "location").toDatabase();
         }
-        assert Offer.getNumberOfPages() == 2;
+        assertEquals(2, Offer.getNumberOfPages());
     }
 }

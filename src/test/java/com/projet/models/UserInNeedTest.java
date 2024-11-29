@@ -1,18 +1,23 @@
 package com.projet.models;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
 
 import com.projet.database.DatabaseConnection;
 import com.projet.database.IncorrectCredentialsException;
 import com.projet.database.UserAlreadyExistsException;
 
-public class UserTest {
-
+public class UserInNeedTest {
     private Connection dbConnection;
+    UserInNeed user;
 
     @Before
     public void setUp() throws SQLException {
@@ -23,48 +28,54 @@ public class UserTest {
         dbConnection.prepareStatement("DELETE FROM users").executeUpdate();
         dbConnection.prepareStatement("DELETE FROM posts").executeUpdate();
         dbConnection.prepareStatement("SET FOREIGN_KEY_CHECKS = 1").executeUpdate();
+        user = new UserInNeed("test", "test");
+    }
+
+    @AfterAll
+    public void tearDown() throws SQLException {
+        dbConnection.prepareStatement("SET FOREIGN_KEY_CHECKS = 0").executeUpdate();
+        dbConnection.prepareStatement("DELETE FROM users").executeUpdate();
+        dbConnection.prepareStatement("DELETE FROM posts").executeUpdate();
+        dbConnection.prepareStatement("SET FOREIGN_KEY_CHECKS = 1").executeUpdate();
     }
 
     @Test
     public void testToDB() throws SQLException, UserAlreadyExistsException {
-        User user = new User("test", "test", UserRole.USER);
         user.toDB();
     }
 
     @Test(expected = UserAlreadyExistsException.class)
     public void testToDBAlreadyExists() throws SQLException, UserAlreadyExistsException {
-        User user = new User("test", "test", UserRole.USER);
         user.toDB();
         user.toDB();
     }
 
     @Test
     public void testLoginFromDB() throws SQLException, UserAlreadyExistsException, IncorrectCredentialsException {
-        User user = new User("test", "test", UserRole.USER);
         user.toDB();
-        User user2 = User.loginFromDB("test", "test");
-        assert user2 != null;
-        assert user2.username.equals("test");
-        assert user2.role == UserRole.USER;
+        UserInNeed user2 = (UserInNeed) UserInNeed.loginFromDB("test", "test");
+        assertNotNull(user2);
+        assertEquals(user.id, user2.id);
+        assertEquals(user.username, user2.username);
+        assertEquals(user.role, user2.role);
     }
 
     @Test(expected = IncorrectCredentialsException.class)
     public void testLoginFromDBIncorrect() throws SQLException, UserAlreadyExistsException, IncorrectCredentialsException {
-        User user = new User("test", "test", UserRole.USER);
         user.toDB();
-        User user2 = User.loginFromDB("test", "test2");
+        UserInNeed.loginFromDB("test", "test2");
     }
 
     @Test
     public void testGetFromDatabase() throws SQLException, UserAlreadyExistsException {
-        User user = new User("test", "test", UserRole.USER);
         user.toDB();
         int id = user.id;
-        User user2 = User.getFromDatabase(id);
-        assert user2 != null;
-        assert user2.username.equals(user.username);
-        assert user2.role == user.role;
-        User userNull = User.getFromDatabase(-1);
-        assert userNull == null;
+        UserInNeed user2 = (UserInNeed) UserInNeed.getFromDatabase(id);
+        assertNotNull(user2);
+        assertEquals(user2.id, id);
+        assertEquals(user2.username, user.username);
+        assertEquals(user2.role, user.role);
+        UserInNeed userNull = (UserInNeed) UserInNeed.getFromDatabase(-1);
+        assertNull(userNull);
     }
 }

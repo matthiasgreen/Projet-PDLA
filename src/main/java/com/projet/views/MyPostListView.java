@@ -1,5 +1,7 @@
 package com.projet.views;
 
+import com.projet.models.PostType;
+
 public class MyPostListView extends PostListView {
     public MyPostListView(PostView selectedPostView) {
         super(selectedPostView);
@@ -22,8 +24,7 @@ public class MyPostListView extends PostListView {
     }
 
     @Override
-    public void setIsOffers(boolean isOffers) {
-        this.isOffers = isOffers;
-        titleLabel.setText(isOffers ? "My offers" : "My missions");
+    public void setPostType(PostType postType) {
+        
     }
 }

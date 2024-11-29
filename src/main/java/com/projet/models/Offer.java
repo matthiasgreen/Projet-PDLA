@@ -1,100 +1,50 @@
 package com.projet.models;
 
 import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 
 
 
 public class Offer extends Post {
-    public Offer(User author, String title, String content, String location) {
+    public Offer(Volunteer author, String title, String content, String location) {
         super(author, title, content, location);
     }
 
-    Offer(int id, User author, String title, String content, String location, Date createdAt) {
+    Offer(int id, Volunteer author, String title, String content, String location, Date createdAt) {
         super(id, author, title, content, location, createdAt);
     }
 
     public static Offer getOffer(int id) throws SQLException {
-        ResultSet result = getPost(id);
-        if (!result.next()) {
-            return null;
+        Post post = getPost(id);
+        if (post instanceof Offer) {
+            return (Offer) post;
         }
-        User author = new User(
-            result.getInt("user_id"),
-            result.getString("username"),
-            UserRole.fromString(result.getString("role"))
-        );
-        return new Offer(
-            result.getInt("id"),
-            author,
-            result.getString("title"),
-            result.getString("content"),
-            result.getString("location"),
-            result.getDate("created_at")
-        );
+        return null;
     }
 
     public void toDatabase() throws SQLException {
-        PreparedStatement statement = prepareInsertStatement();
-        statement.setString(1, "offer");
-        statement.setString(2, MissionStatus.VALIDATED.toString().toLowerCase());
-        statement.executeUpdate();
-        ResultSet generatedKeys = statement.getGeneratedKeys();
-        if (!generatedKeys.next()) {
-            throw new SQLException("Failed to retrieve the generated key");
-        }
-        id = generatedKeys.getInt(1);
-        statement.close();
+        super.toDatabase();
     }
 
-    public static ArrayList<Offer> getOffers(int page) throws SQLException {
-        ArrayList<Offer> offers = new ArrayList<>();
-        ResultSet result = getPosts(PostType.OFFER, page);
-        HashMap<Integer, User> users = new HashMap<>();
-
-        while (result.next()) {
-            int id = result.getInt("id");
-            int userId = result.getInt("user_id");
-            User author = users.get(userId);
-            if (author == null) {
-                author = new User(userId, result.getString("username"), UserRole.fromString(result.getString("role")));
-                users.put(userId, author);
-            }
-            String title = result.getString("title");
-            String content = result.getString("content");
-            String location = result.getString("location");
-            Date createdAt = result.getDate("created_at");
-            offers.add(new Offer(id, author, title, content, location, createdAt));
-        }
-
-        return offers;
+    @SuppressWarnings("unchecked")
+    public static List<Offer> getOffers(int page) throws SQLException {
+        List<? extends Post> posts = getPosts(PostType.OFFER, page);
+        // All the posts are offers, we just have to cast
+        return (List<Offer>) posts;
     }
 
-    public static ArrayList<Offer> getMyOffers(User user, int page) throws SQLException {
-        ArrayList<Offer> offers = new ArrayList<>();
-        ResultSet result = getMyPosts(PostType.OFFER, user, page);
-
-        while (result.next()) {
-            int id = result.getInt("id");
-            String title = result.getString("title");
-            String content = result.getString("content");
-            String location = result.getString("location");
-            Date createdAt = result.getDate("created_at");
-            offers.add(new Offer(id, user, title, content, location, createdAt));
-        }
-
-        return offers;
+    @SuppressWarnings("unchecked")
+    public static List<Offer> getMyOffers(Volunteer user, int page) throws SQLException {
+        List<? extends Post> posts = getMyPosts(PostType.OFFER, user, page);
+        return (List<Offer>) posts;
     }
 
     public static int getNumberOfPages() throws SQLException {
         return Post.getNumberOfPages(PostType.OFFER);
     }
 
-    public static int getMyNumberOfPages(User user) throws SQLException {
+    public static int getMyNumberOfPages(Volunteer user) throws SQLException {
         return Post.getMyNumberOfPages(PostType.OFFER, user);
     }
 }

@@ -4,8 +4,11 @@ import java.sql.SQLException;
 
 import com.projet.database.IncorrectCredentialsException;
 import com.projet.database.UserAlreadyExistsException;
-import com.projet.models.User;
+import com.projet.models.AbstractUser;
+import com.projet.models.UserInNeed;
 import com.projet.models.UserRole;
+import com.projet.models.Validator;
+import com.projet.models.Volunteer;
 import com.projet.views.ViewManager;
 import com.projet.views.LoginView;
 
@@ -23,7 +26,14 @@ public class UserController {
     }
 
     public void signUp(String username, String password, UserRole role) {
-        User user = new User(username, password, role);
+        AbstractUser user;
+        if (role == UserRole.USER_IN_NEED) {
+            user = new UserInNeed(username, password);
+        } else if (role == UserRole.VOLUNTEER) {
+            user = new Volunteer(username, password);
+        } else {
+            user = new Validator(username, password);
+        }
         try {
             user.toDB();
             postController.setLoggedInUser(user);
@@ -39,7 +49,7 @@ public class UserController {
 
     public void login(String username, String password) {
         try {
-            User user = User.loginFromDB(username, password);
+            AbstractUser user = AbstractUser.loginFromDB(username, password);
             loginView.onSuccess();
             postController.setLoggedInUser(user);
             viewManager.showPostListView();

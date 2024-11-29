@@ -1,8 +1,11 @@
 package com.projet.models;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -13,7 +16,7 @@ import com.projet.database.UserAlreadyExistsException;
 
 public class MissionTest {
     private Connection dbConnection;
-    private User author = new User("test", "test", UserRole.USER);
+    private UserInNeed author = new UserInNeed("test", "test");
 
     @Before
     public void setUp() throws SQLException, UserAlreadyExistsException {
@@ -39,12 +42,12 @@ public class MissionTest {
     public void testToDatabase() throws SQLException {
         Mission mission = new Mission(author, "title", "content", "location");
         mission.toDatabase();
-        assert mission.id != null;
+        assertNotNull(mission.id);
         Mission mission2 = Mission.getMission(mission.id);
-        assert mission2 != null;
-        assert mission2.id == mission.id;
-        assert mission2.author.id == author.id;
-        assert mission2.title.equals(mission.title);
+        assertNotNull(mission2);
+        assertEquals(mission.id, mission2.id);
+        assertEquals(author.id, mission2.author.id);
+        assertEquals(mission.title, mission2.title);
     }
 
     @Test
@@ -52,10 +55,10 @@ public class MissionTest {
         Mission mission = new Mission(author, "title", "content", "location");
         mission.toDatabase();
         mission.validate();
-        assert mission.status == MissionStatus.VALIDATED;
+        assertEquals(MissionStatus.VALIDATED, mission.status);
         Mission mission2 = Mission.getMission(mission.id);
-        assert mission2 != null;
-        assert mission2.status == MissionStatus.VALIDATED;
+        assertNotNull(mission2);
+        assertEquals(MissionStatus.VALIDATED, mission2.status);
     }
 
     @Test
@@ -63,40 +66,40 @@ public class MissionTest {
         Mission mission = new Mission(author, "title", "content", "location");
         mission.toDatabase();
         mission.refuse("reason");
-        assert mission.status == MissionStatus.REFUSED;
-        assert mission.refusalReason.equals("reason");
+        assertEquals(MissionStatus.REFUSED, mission.status);
+        assertEquals("reason", mission.refusalReason);
         Mission mission2 = Mission.getMission(mission.id);
-        assert mission2 != null;
-        assert mission2.status == MissionStatus.REFUSED;
-        assert mission2.refusalReason.equals("reason");
+        assertNotNull(mission2);
+        assertEquals(MissionStatus.REFUSED, mission2.status);
+        assertEquals("reason", mission2.refusalReason);
     }
 
     @Test
     public void testGetMissions() throws SQLException {
         Mission mission = new Mission(author, "title", "content", "location");
         mission.toDatabase();
-        ArrayList<Mission> missions = Mission.getMissions(0);
-        assert missions.size() == 1;
-        assert missions.get(0).id == mission.id;
+        List<Mission> missions = Mission.getMissions(0);
+        assertEquals(1, missions.size());
+        assertEquals(mission.id, missions.get(0).id);
     }
 
     @Test
     public void testGetMyMissions() throws SQLException {
         Mission mission = new Mission(author, "title", "content", "location");
         mission.toDatabase();
-        ArrayList<Mission> missions = Mission.getMyMissions(author, 0);
-        assert missions.size() == 1;
-        assert missions.get(0).id == mission.id;
+        List<Mission> missions = Mission.getMyMissions(author, 0);
+        assertEquals(1, missions.size());
+        assertEquals(mission.id, missions.get(0).id);
     }
 
     @Test
     public void testGetNumberOfPages() throws SQLException {
         Mission mission = new Mission(author, "title", "content", "location");
         mission.toDatabase();
-        assert Mission.getNumberOfPages() == 1;
+        assertEquals(1, Mission.getNumberOfPages());
         for (int i = 0; i < Post.PAGE_SIZE; i++) {
             new Mission(author, "title", "content", "location").toDatabase();
         }
-        assert Mission.getNumberOfPages() == 2;
+        assertEquals(2, Mission.getNumberOfPages());
     }
 }
