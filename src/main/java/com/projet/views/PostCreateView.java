@@ -27,6 +27,7 @@ public class PostCreateView extends JPanel {
         errorLabel = new JLabel();
         titleLabel = new JLabel("Create a new post");
         titleLabel.setFont(titleLabel.getFont().deriveFont(24.0f));
+        
         titleField = new CustomTextField<>("Title:", new JTextField());
         descriptionField = new CustomTextField<>("Description:", new JTextField());
         locationField = new CustomTextField<>("Location:", new JTextField());

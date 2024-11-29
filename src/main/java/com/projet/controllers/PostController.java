@@ -49,8 +49,13 @@ public class PostController {
     public void setLoggedInUser(AbstractUser user) {
         loggedInUser = user;
         postListView.setPostType(user.getMainListPostType());
-        myPostListView.setPostType(user.getCreatePostType());
-        postCreateView.setPostType(user.getCreatePostType());
+        if (user.getCreatePostType() != null) {
+            myPostListView.setPostType(user.getCreatePostType());
+            postCreateView.setPostType(user.getCreatePostType());
+        } else {
+            myPostListView.setVisible(false);
+            postCreateView.setVisible(false);
+        }
         postListView.showValidationOptions(user.canValidateMissions());
         
 
@@ -143,6 +148,9 @@ public class PostController {
     }
 
     private void myListSetPosts() throws SQLException {
+        if (loggedInUser.getCreatePostType() == null) {
+            return;
+        }
         List<? extends Post> posts = (
             loggedInUser.getCreatePostType() == PostType.MISSION ?
             Mission.getMyMissions((UserInNeed)loggedInUser, mainPage)
@@ -185,7 +193,7 @@ public class PostController {
             mission.validate();
             mainListSetPosts();
         } catch (SQLException e) {
-            e.printStackTrace();
+            myPostListView.setError("Error validating mission: " + e.getMessage());
         }
     };
 
@@ -194,8 +202,7 @@ public class PostController {
             mission.refuse(refusalReason);
             mainListSetPosts();
         } catch (SQLException e) {
-            e.printStackTrace();
-}
-
-}
+            myPostListView.setError("Error refusing mission: " + e.getMessage());
+        }
+    }
 }

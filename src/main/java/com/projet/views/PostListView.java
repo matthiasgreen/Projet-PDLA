@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.util.List;
 
 import com.projet.controllers.PostController;
+import com.projet.models.AbstractUser;
 import com.projet.models.Mission;
 import com.projet.models.Post;
 import com.projet.models.PostType;
@@ -25,10 +26,11 @@ public class PostListView extends JPanel {
     private JButton pageBackwardButton;
     private JButton pageForwardButton;
     private JButton validatingButton;
-    private JButton refusalButton;
-    protected JButton createPostButton; 
+    private JButton refusingButton;
+    protected JButton createPostButton;
+    private JButton deleteButton; 
     private JScrollPane postListScrollPane;
-    private CustomTextField<JTextField> refusalReasonField;
+    private CustomTextField<JTextField> justificationValidator;
     
     protected JList<Post> postJList;
 
@@ -59,10 +61,22 @@ public class PostListView extends JPanel {
         add(titleLabel, c);
 
         postJList = new JList<>();
+        
+
         postJList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         postJList.setCellRenderer(new PostListCellRenderer(true));
         postJList.setMinimumSize(new Dimension(400, 400));
         postJList.setFixedCellHeight(50);
+        //validate and refuse button only allowed if a post is selected
+        postJList.addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                Post selectedPost = postJList.getSelectedValue();
+                boolean isMissionSelected = selectedPost instanceof Mission;
+                validatingButton.setEnabled(isMissionSelected);
+                refusingButton.setEnabled(isMissionSelected);
+                justificationValidator.setVisible(isMissionSelected);
+            }
+        });
         c.gridy++;
 
         postListScrollPane = new JScrollPane(postJList);
@@ -93,14 +107,34 @@ public class PostListView extends JPanel {
         add(validatingButton, c);
         validatingButton.setVisible(false);
 
-        refusalButton = new JButton("Refuse");
-        refusalButton.addActionListener(e -> postController.refuseMission((Mission) postJList.getSelectedValue(), refusalReasonField.getText()));
+        refusingButton = new JButton("Refuse");
+        refusingButton.addActionListener(e -> postController.refuseMission((Mission) postJList.getSelectedValue(), justificationValidator.getText()));
+        c.gridx = 1;
+        add(refusingButton, c);
+        refusingButton.setVisible(false);
 
-        refusalReasonField = new CustomTextField<>("Justification", new JTextField());
+        deleteButton = new JButton("Delete");
+
+    
+
+        deleteButton.addActionListener(
+            e -> {
+                DefaultListModel<Post> listModel = (DefaultListModel<Post>) postJList.getModel();                
+                listModel.remove(postJList.getSelectedIndex());
+            
+            }
+        );
+        
+        c.gridx = 0;
+        c.gridy++;
+        add(deleteButton, c);
+        //deleteButton.setVisible(false);
+
+        justificationValidator = new CustomTextField<>("Justification", new JTextField());
         c.gridx = 1;
         c.gridy++;
-        add(refusalReasonField, c);
-        refusalReasonField.setVisible(false);
+        add(justificationValidator, c);
+        justificationValidator.setVisible(false);
 
         createPostButton = new JButton("Create post");
         createPostButton.addActionListener(new ActionListener() {
@@ -125,8 +159,8 @@ public class PostListView extends JPanel {
 
     public void showValidationOptions(boolean isValidator){
         validatingButton.setVisible(isValidator);
-        refusalButton.setVisible(isValidator);
-        refusalReasonField.setVisible(isValidator);
+        refusingButton.setVisible(isValidator);
+        justificationValidator.setVisible(isValidator);
     }
 
     protected void nextPage() {
