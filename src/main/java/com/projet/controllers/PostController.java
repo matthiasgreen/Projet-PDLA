@@ -212,17 +212,7 @@ public class PostController {
 
     //a function to send the justification of the refusal to the database
     public void RefuseButton(Mission mission, String refusalReason) throws SQLException{
-        mission.status = MissionStatus.REFUSED;
-        mission.refusalReason = refusalReason;
-        SqlUtility.executeUpdate(
-        "UPDATE posts SET status = ?, refusal_reason = ? WHERE id = ?",
-        mission.status.toString(),
-        refusalReason,
-        mission.id
-        );
+        mission.refuse(refusalReason);
         myListSetPosts();
-    }   
-
-    
-
+    }
 }
