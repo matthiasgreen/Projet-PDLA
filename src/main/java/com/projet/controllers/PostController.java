@@ -5,8 +5,10 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import com.projet.database.SqlUtility;
 import com.projet.models.AbstractUser;
 import com.projet.models.Mission;
+import com.projet.models.MissionStatus;
 import com.projet.models.Offer;
 import com.projet.models.Post;
 import com.projet.models.PostType;
@@ -197,12 +199,30 @@ public class PostController {
         }
     };
 
-    public void refuseMission(Mission mission, String refusalReason){
-        try {
-            mission.refuse(refusalReason);
-            mainListSetPosts();
-        } catch (SQLException e) {
-            myPostListView.setError("Error refusing mission: " + e.getMessage());
-        }
+
+    public void setFinished(Mission mission) throws SQLException{
+        mission.status = MissionStatus.DONE;
+        SqlUtility.executeQuery(
+        "UPDATE posts SET status = ?, WHERE id = ?",
+        mission.status.toString(),
+        mission.id
+        );
+        myListSetPosts();
     }
+
+    //a function to send the justification of the refusal to the database
+    public void RefuseButton(Mission mission, String refusalReason) throws SQLException{
+        mission.status = MissionStatus.REFUSED;
+        mission.refusalReason = refusalReason;
+        SqlUtility.executeUpdate(
+        "UPDATE posts SET status = ?, refusal_reason = ? WHERE id = ?",
+        mission.status.toString(),
+        refusalReason,
+        mission.id
+        );
+        myListSetPosts();
+    }   
+
+    
+
 }

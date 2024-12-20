@@ -3,6 +3,7 @@ package com.projet.views;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 import javax.swing.*;
 
@@ -28,7 +29,8 @@ public class PostListView extends JPanel {
     private JButton validatingButton;
     private JButton refusingButton;
     protected JButton createPostButton;
-    private JButton deleteButton; 
+    private JButton deleteButton;
+    private JButton setDone;
     private JScrollPane postListScrollPane;
     private CustomTextField<JTextField> justificationValidator;
     
@@ -63,6 +65,7 @@ public class PostListView extends JPanel {
         postJList = new JList<>();
         
 
+
         postJList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         postJList.setCellRenderer(new PostListCellRenderer(true));
         postJList.setMinimumSize(new Dimension(400, 400));
@@ -86,6 +89,8 @@ public class PostListView extends JPanel {
 
         c.gridy++;
         add(selectedPostView, c);
+
+
         
         pageBackwardButton = new JButton("Previous page");
         pageBackwardButton.addActionListener(e -> previousPage());
@@ -98,7 +103,17 @@ public class PostListView extends JPanel {
         c.gridx = 1;
         add(pageForwardButton, c);
 
-
+        refusingButton = new JButton("Refuse");
+        refusingButton.addActionListener(e -> {
+            try {
+                postController.RefuseButton((Mission) postJList.getSelectedValue(), justificationValidator.getText());
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+        });
+        c.gridx = 1;
+        add(refusingButton, c);
+        refusingButton.setVisible(false);
         //on ajoute un bouton de validation que seul les valideurs voient
         validatingButton = new JButton("Validate");
         validatingButton.addActionListener(e -> postController.validateMission((Mission) postJList.getSelectedValue()));
@@ -107,13 +122,23 @@ public class PostListView extends JPanel {
         add(validatingButton, c);
         validatingButton.setVisible(false);
 
-        refusingButton = new JButton("Refuse");
-        refusingButton.addActionListener(e -> postController.refuseMission((Mission) postJList.getSelectedValue(), justificationValidator.getText()));
-        c.gridx = 1;
-        add(refusingButton, c);
-        refusingButton.setVisible(false);
+    
 
         deleteButton = new JButton("Delete");
+
+        //create a button to set mission as done   
+        setDone = new JButton("Set as done");
+        setDone.addActionListener(e -> {
+            try {
+                postController.setFinished((Mission) postJList.getSelectedValue());
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+        });
+        c.gridx = 1;
+        c.gridy++;
+        add(setDone, c);
+
 
     
 
@@ -136,6 +161,11 @@ public class PostListView extends JPanel {
         add(justificationValidator, c);
         justificationValidator.setVisible(false);
 
+
+        
+
+
+
         createPostButton = new JButton("Create post");
         createPostButton.addActionListener(new ActionListener() {
             @Override
@@ -143,7 +173,7 @@ public class PostListView extends JPanel {
                 postController.togglePostCreate();
             }
         });
-        c.gridwidth = 2;
+        c.gridwidth = 3;
         c.gridx = 0;
         c.gridy++;
         add(createPostButton, c);
@@ -162,6 +192,7 @@ public class PostListView extends JPanel {
         refusingButton.setVisible(isValidator);
         justificationValidator.setVisible(isValidator);
     }
+
 
     protected void nextPage() {
         // Should be overriden by myPostListView
