@@ -41,19 +41,6 @@ public class Mission extends Post {
             id
         );
     }
-
-    public void refuse(String refusalReason) throws SQLException {
-        status = MissionStatus.REFUSED;
-        this.refusalReason = refusalReason;
-
-        SqlUtility.executeUpdate(
-            "UPDATE posts SET status = ?, refusal_reason = ? WHERE id = ?",
-            status.toString(),
-            refusalReason,
-            id
-        );
-    }
-
     @SuppressWarnings("unchecked")
     public static List<Mission> getMissions(int page) throws SQLException {
         List<? extends Post> posts = getPosts(PostType.MISSION, page);
