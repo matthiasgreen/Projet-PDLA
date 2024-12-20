@@ -24,3 +24,14 @@ CREATE TABLE posts (
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
+DROP TABLE IF EXISTS reviews;
+CREATE TABLE reviews (
+    author_id INT NOT NULL,
+    target_id INT NOT NULL,
+    content TEXT NOT NULL,
+    rating INT NOT NULL,
+
+    PRIMARY KEY (author_id, target_id),
+    FOREIGN KEY (author_id) REFERENCES users(id),
+    FOREIGN KEY (target_id) REFERENCES users(id)
+);

@@ -132,7 +132,7 @@ public class PostController {
             viewManager.showPostCreateView();
             currentView = "create";
         } else {
-            viewManager.showPostListView();
+            viewManager.showHomeView();
             currentView = "list";
         }
     }
@@ -180,7 +180,7 @@ public class PostController {
             } else {
                 new Mission((UserInNeed)loggedInUser, title, content, location).toDatabase();
             }
-            viewManager.showPostListView();
+            viewManager.showHomeView();
             myListSetPosts();
         } catch (SQLException e) {
             postCreateView.setError("Error creating post: " + e.getMessage());

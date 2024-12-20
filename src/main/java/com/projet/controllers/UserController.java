@@ -11,18 +11,32 @@ import com.projet.models.Validator;
 import com.projet.models.Volunteer;
 import com.projet.views.ViewManager;
 import com.projet.views.LoginView;
+import com.projet.views.UserView;
 
 public class UserController {
     private LoginView loginView;
+    private UserView userView;
     private ViewManager viewManager;
 
     private PostController postController;
+    private ReviewController reviewController;
     
-    public UserController(LoginView loginView, ViewManager viewManager, PostController postController) {
+    public UserController(LoginView loginView, UserView userView, ViewManager viewManager, PostController postController, ReviewController reviewController) {
         this.loginView = loginView;
         this.viewManager = viewManager;
         this.postController = postController;
+        this.reviewController = reviewController;
+        this.userView = userView;
         loginView.setUserController(this);
+        userView.setUserController(this);
+
+    }
+
+    private void afterLoginOrSignUp(AbstractUser user) {
+        postController.setLoggedInUser(user);
+        reviewController.setLoggedInUser(user);
+        viewManager.showHomeView();
+        displayUsers();
     }
 
     public void signUp(String username, String password, UserRole role) {
@@ -36,9 +50,7 @@ public class UserController {
         }
         try {
             user.toDB();
-            postController.setLoggedInUser(user);
-            loginView.onSuccess();
-            viewManager.showPostListView();
+            afterLoginOrSignUp(user);
         } catch (SQLException e) {
             loginView.onError("An error occurred while trying to sign up.");
             e.printStackTrace();
@@ -50,9 +62,7 @@ public class UserController {
     public void login(String username, String password) {
         try {
             AbstractUser user = AbstractUser.loginFromDB(username, password);
-            loginView.onSuccess();
-            postController.setLoggedInUser(user);
-            viewManager.showPostListView();
+            afterLoginOrSignUp(user);
         } catch (SQLException e) {
             loginView.onError("An error occurred while trying to log in.");
             e.printStackTrace();
@@ -60,6 +70,19 @@ public class UserController {
         } catch (IncorrectCredentialsException e) {
             loginView.onError("Incorrect username or password.");
             return;
+        }
+    }
+
+    public void selectUser(AbstractUser user) {
+        reviewController.displayReviews(user);
+    }
+
+    public void displayUsers() {
+        try {
+            userView.displayUsers(AbstractUser.getAllFromDatabase());
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 }

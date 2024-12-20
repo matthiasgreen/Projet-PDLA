@@ -5,11 +5,14 @@ import java.awt.Dimension;
 import javax.swing.*;
 
 import com.projet.controllers.PostController;
+import com.projet.controllers.ReviewController;
 import com.projet.controllers.UserController;
 import com.projet.views.MyPostListView;
 import com.projet.views.PostCreateView;
 import com.projet.views.PostListView;
 import com.projet.views.PostView;
+import com.projet.views.ReviewView;
+import com.projet.views.UserView;
 import com.projet.views.ViewManager;
 import com.projet.views.LoginView;
 
@@ -28,15 +31,20 @@ public class Main {
         PostListView postListView = new PostListView(selectedPostView);
         PostCreateView postCreateView = new PostCreateView(false);
         MyPostListView myPostListView = new MyPostListView(mySelectedPostView);
+        UserView userView = new UserView();
+        ReviewView reviewView = new ReviewView();
         ViewManager viewManager = new ViewManager(
             loginView,
             postListView,
             postCreateView,
-            myPostListView
+            myPostListView,
+            userView,
+            reviewView
         );
         frame.add(viewManager);
 
         // Create the controllers
+        ReviewController reviewController = new ReviewController(reviewView);
         PostController postController = new PostController(
             selectedPostView,
             mySelectedPostView,
@@ -47,8 +55,10 @@ public class Main {
         );
         UserController userController = new UserController(
             loginView,
+            userView,
             viewManager,
-            postController
+            postController,
+            reviewController
         );
 
         viewManager.showLoginView();

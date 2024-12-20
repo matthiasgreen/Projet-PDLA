@@ -103,4 +103,11 @@ public abstract class AbstractUser {
         }
         return users.get(0);
     }
+
+    public static List<? extends AbstractUser> getAllFromDatabase() throws SQLException {
+        return SqlUtility.executeQuery(
+            "SELECT * FROM users",
+            AbstractUser::resultFunction
+        );
+    }
 }
