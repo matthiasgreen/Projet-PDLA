@@ -111,7 +111,7 @@ public class PostListView extends JPanel {
                 e1.printStackTrace();
             }
         });
-        c.gridx = 1;
+        c.gridx = 4;
         add(refusingButton, c);
         refusingButton.setVisible(false);
         //on ajoute un bouton de validation que seul les valideurs voient
