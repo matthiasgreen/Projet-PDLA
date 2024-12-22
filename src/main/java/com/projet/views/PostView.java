@@ -5,7 +5,7 @@ import java.awt.BorderLayout;
 import javax.swing.*;
 
 import com.projet.controllers.PostController;
-import com.projet.models.Post;
+import com.projet.models.post.Post;
 
 public class PostView extends JPanel {
     private PostController postController;

@@ -1,4 +1,4 @@
-package com.projet.models;
+package com.projet.models.user;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,6 +8,7 @@ import java.util.List;
 import com.projet.database.IncorrectCredentialsException;
 import com.projet.database.SqlUtility;
 import com.projet.database.UserAlreadyExistsException;
+import com.projet.models.post.PostType;
 
 
 public abstract class AbstractUser {

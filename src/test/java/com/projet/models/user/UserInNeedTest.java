@@ -1,4 +1,4 @@
-package com.projet.models;
+package com.projet.models.user;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

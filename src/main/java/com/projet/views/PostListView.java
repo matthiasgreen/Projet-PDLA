@@ -10,10 +10,10 @@ import javax.swing.*;
 import java.util.List;
 
 import com.projet.controllers.PostController;
-import com.projet.models.AbstractUser;
-import com.projet.models.Mission;
-import com.projet.models.Post;
-import com.projet.models.PostType;
+import com.projet.models.post.Mission;
+import com.projet.models.post.Post;
+import com.projet.models.post.PostType;
+import com.projet.models.user.AbstractUser;
 import com.projet.swingComponents.CustomTextField;
 import com.projet.swingComponents.PostListCellRenderer;
 

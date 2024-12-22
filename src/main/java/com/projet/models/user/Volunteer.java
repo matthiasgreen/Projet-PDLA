@@ -1,4 +1,6 @@
-package com.projet.models;
+package com.projet.models.user;
+
+import com.projet.models.post.PostType;
 
 public class Volunteer extends AbstractUser {
 

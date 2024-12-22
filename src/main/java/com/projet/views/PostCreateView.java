@@ -4,8 +4,8 @@ package com.projet.views;
 import javax.swing.*;
 
 import com.projet.controllers.PostController;
-import com.projet.models.PostType;
-import com.projet.models.UserInNeed;
+import com.projet.models.post.PostType;
+import com.projet.models.user.UserInNeed;
 import com.projet.swingComponents.CustomTextField;
 
 public class PostCreateView extends JPanel {

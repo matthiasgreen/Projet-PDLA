@@ -1,6 +1,6 @@
 package com.projet.views;
 
-import com.projet.models.PostType;
+import com.projet.models.post.PostType;
 
 public class MyPostListView extends PostListView {
     public MyPostListView(PostView selectedPostView) {

@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 
 import com.projet.controllers.UserController;
-import com.projet.models.UserRole;
+import com.projet.models.user.UserRole;
 import com.projet.swingComponents.CustomTextField;
 
 public class LoginView extends JPanel {

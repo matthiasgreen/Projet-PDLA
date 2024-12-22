@@ -11,7 +11,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 
 import com.projet.controllers.UserController;
-import com.projet.models.AbstractUser;
+import com.projet.models.user.AbstractUser;
 import com.projet.swingComponents.UserListCellRenderer;
 
 public class UserView extends JPanel {

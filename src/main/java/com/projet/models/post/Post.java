@@ -1,9 +1,14 @@
-package com.projet.models;
+package com.projet.models.post;
 
 import java.sql.*;
 import java.util.List;
 
 import com.projet.database.SqlUtility;
+import com.projet.models.user.AbstractUser;
+import com.projet.models.user.UserInNeed;
+import com.projet.models.user.UserRole;
+import com.projet.models.user.Validator;
+import com.projet.models.user.Volunteer;
 
 public abstract class Post {
     public static int PAGE_SIZE = 10;

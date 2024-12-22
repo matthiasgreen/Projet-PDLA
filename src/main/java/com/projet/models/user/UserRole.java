@@ -1,4 +1,4 @@
-package com.projet.models;
+package com.projet.models.user;
 
 public enum UserRole {
     USER_IN_NEED,

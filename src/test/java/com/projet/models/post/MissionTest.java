@@ -1,4 +1,4 @@
-package com.projet.models;
+package com.projet.models.post;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -13,6 +13,7 @@ import org.junit.jupiter.api.AfterAll;
 
 import com.projet.database.DatabaseConnection;
 import com.projet.database.UserAlreadyExistsException;
+import com.projet.models.user.UserInNeed;
 
 public class MissionTest {
     private Connection dbConnection;

@@ -1,4 +1,4 @@
-package com.projet.models;
+package com.projet.models.post;
 
 public enum PostType {
     MISSION,

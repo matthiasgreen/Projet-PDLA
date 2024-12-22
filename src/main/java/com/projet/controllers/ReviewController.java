@@ -3,8 +3,8 @@ package com.projet.controllers;
 import java.sql.SQLException;
 import java.util.List;
 
-import com.projet.models.AbstractUser;
-import com.projet.models.Review;
+import com.projet.models.post.Review;
+import com.projet.models.user.AbstractUser;
 import com.projet.views.ReviewView;
 import com.projet.views.ReviewViewModel;
 

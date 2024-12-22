@@ -1,8 +1,10 @@
-package com.projet.models;
+package com.projet.models.post;
 
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
+
+import com.projet.models.user.Volunteer;
 
 
 

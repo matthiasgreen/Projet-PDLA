@@ -4,11 +4,11 @@ import java.sql.SQLException;
 
 import com.projet.database.IncorrectCredentialsException;
 import com.projet.database.UserAlreadyExistsException;
-import com.projet.models.AbstractUser;
-import com.projet.models.UserInNeed;
-import com.projet.models.UserRole;
-import com.projet.models.Validator;
-import com.projet.models.Volunteer;
+import com.projet.models.user.AbstractUser;
+import com.projet.models.user.UserInNeed;
+import com.projet.models.user.UserRole;
+import com.projet.models.user.Validator;
+import com.projet.models.user.Volunteer;
 import com.projet.views.ViewManager;
 import com.projet.views.LoginView;
 import com.projet.views.UserView;

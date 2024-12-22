@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.ListCellRenderer;
 
-import com.projet.models.AbstractUser;
+import com.projet.models.user.AbstractUser;
 
 public class UserListCellRenderer extends JPanel implements ListCellRenderer<AbstractUser> {
     private JLabel nameLabel;
