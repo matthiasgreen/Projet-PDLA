@@ -16,32 +16,10 @@ Ce projet est une application Java conçue pour aider les personnes vulnérables
 - **Validation des missions** : Les validateurs peuvent approuver ou refuser des missions.
 - **Gestion des statuts** : Les utilisateurs en besoin peuvent changer le statut des missions vers DONE, ou supprimer les missions.
 
-## Diagramme de classes
-
-```mermaid
-classDiagram
-    class User {
-        +int id
-        +String username
-        +String password
-        +UserRole role
-    }
-    UserInNeed --|> User
-    Volunteer --|> User
-    Validator --|> User
-
-    class Post {
-        +int id
-        +String title
-        +String content
-        +String location
-        +String refusal_reason
-        +Date createdAt
-        +String type
-        +String status
-        +int user_id
-    }
-
-
-    Mission --|> Post
-    Offer --|> Post
+## Structure
+Le code est structuré avec le design pattern MVC:
+- **com.projet.models**: Structures de données comme User, Review, Post, etc... Ces classes exposent également des méthodes pour faire des opérations sur la base de données.
+- **com.projet.views**: Eléments graphiques de l'application, qui présentent des données aux utilisateurs et leur permettent d'interagir avec l'application.
+- **com.projet.controllers**: Classes qui gèrent les interactions entre les modèles et les vues.
+- **com.projet.database.DatabaseConnection**: Permet de gérer une connexion à la base de données.
+- **com.projet.Main**: Point d'entrée de l'application. Crée des instances des classes Controller et View pour lancer l'application.
