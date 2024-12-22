@@ -12,8 +12,9 @@ import com.projet.views.PostCreateView;
 import com.projet.views.PostListView;
 import com.projet.views.PostView;
 import com.projet.views.ReviewView;
+import com.projet.views.SignupView;
 import com.projet.views.UserView;
-import com.projet.views.ViewManager;
+import com.projet.views.NavigationBar;
 import com.projet.views.LoginView;
 
 public class Main {
@@ -26,6 +27,7 @@ public class Main {
         
         // Create the views
         LoginView loginView = new LoginView();
+        SignupView signupView = new SignupView();
         PostView selectedPostView = new PostView();
         PostView mySelectedPostView = new PostView();
         PostListView postListView = new PostListView(selectedPostView);
@@ -33,15 +35,16 @@ public class Main {
         MyPostListView myPostListView = new MyPostListView(mySelectedPostView);
         UserView userView = new UserView();
         ReviewView reviewView = new ReviewView();
-        ViewManager viewManager = new ViewManager(
+        NavigationBar navBar = new NavigationBar(
             loginView,
+            signupView,
             postListView,
-            postCreateView,
             myPostListView,
+            postCreateView,
             userView,
             reviewView
         );
-        frame.add(viewManager);
+        frame.add(navBar);
 
         // Create the controllers
         ReviewController reviewController = new ReviewController(reviewView);
@@ -50,18 +53,18 @@ public class Main {
             mySelectedPostView,
             postListView,
             myPostListView,
-            postCreateView,
-            viewManager
+            postCreateView
         );
         UserController userController = new UserController(
             loginView,
+            signupView,
             userView,
-            viewManager,
+            navBar,
             postController,
             reviewController
         );
 
-        viewManager.showLoginView();
+        navBar.showLogin(true);
         
         frame.pack();
         frame.setVisible(true);

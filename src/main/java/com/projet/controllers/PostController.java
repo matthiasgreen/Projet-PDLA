@@ -18,7 +18,6 @@ import com.projet.views.MyPostListView;
 import com.projet.views.PostCreateView;
 import com.projet.views.PostListView;
 import com.projet.views.PostView;
-import com.projet.views.ViewManager;
 
 public class PostController {
     private PostView selectedPostView;
@@ -26,14 +25,12 @@ public class PostController {
     private PostListView postListView;
     private MyPostListView myPostListView;
     private PostCreateView postCreateView;
-    private ViewManager viewManager;
     
     private AbstractUser loggedInUser;
     private int mainPage = 0;
-    private String currentView = "list";
 
     public PostController(PostView selectedPostView, PostView mySelectedPostView, PostListView postListView,
-            MyPostListView myPostListView, PostCreateView postCreateView, ViewManager viewManager) {
+            MyPostListView myPostListView, PostCreateView postCreateView) {
         this.selectedPostView = selectedPostView;
         this.mySelectedPostView = mySelectedPostView;
         this.postListView = postListView;
@@ -45,7 +42,6 @@ public class PostController {
         postListView.setPostController(this);
         myPostListView.setPostController(this);
         postCreateView.setPostController(this);
-        this.viewManager = viewManager;
     }
 
     public void setLoggedInUser(AbstractUser user) {
@@ -59,7 +55,7 @@ public class PostController {
             postCreateView.setVisible(false);
         }
         postListView.showValidationOptions(user.canValidateMissions());
-        
+        myPostListView.showValidationOptions(false);
 
         try {
             mainListSetPosts();
@@ -129,16 +125,6 @@ public class PostController {
         }
     }
 
-    public void togglePostCreate() {
-        if (currentView.equals("list")) {
-            viewManager.showPostCreateView();
-            currentView = "create";
-        } else {
-            viewManager.showHomeView();
-            currentView = "list";
-        }
-    }
-
     private void mainListSetPosts() throws SQLException {
 
         List<? extends Post> posts = (
@@ -182,7 +168,6 @@ public class PostController {
             } else {
                 new Mission((UserInNeed)loggedInUser, title, content, location).toDatabase();
             }
-            viewManager.showHomeView();
             myListSetPosts();
         } catch (SQLException e) {
             postCreateView.setError("Error creating post: " + e.getMessage());
@@ -211,7 +196,11 @@ public class PostController {
     }
 
     //a function to send the justification of the refusal to the database
-    public void RefuseButton(Mission mission, String refusalReason) throws SQLException{
+    public void refuseMission(Mission mission, String refusalReason) throws SQLException {
+        if (refusalReason == null || refusalReason.isEmpty()) {
+            postListView.setError("Please select a mission and enter a refusal reason");
+            return;
+        }
         mission.refuse(refusalReason);
         myListSetPosts();
     }

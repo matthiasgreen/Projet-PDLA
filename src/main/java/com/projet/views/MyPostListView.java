@@ -5,7 +5,8 @@ import com.projet.models.post.PostType;
 public class MyPostListView extends PostListView {
     public MyPostListView(PostView selectedPostView) {
         super(selectedPostView);
-        createPostButton.setVisible(true);
+        setDone.setVisible(true);
+        deleteButton.setVisible(true);
     }
     
     @Override

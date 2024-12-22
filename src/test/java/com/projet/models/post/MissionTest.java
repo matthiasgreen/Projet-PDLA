@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.junit.jupiter.api.AfterAll;
 
 import com.projet.database.DatabaseConnection;
-import com.projet.database.UserAlreadyExistsException;
+import com.projet.models.user.UserAlreadyExistsException;
 import com.projet.models.user.UserInNeed;
 
 public class MissionTest {

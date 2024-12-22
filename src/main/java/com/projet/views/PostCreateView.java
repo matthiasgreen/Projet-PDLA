@@ -9,21 +9,19 @@ import com.projet.models.user.UserInNeed;
 import com.projet.swingComponents.CustomTextField;
 
 public class PostCreateView extends JPanel {
-    private boolean isOffers;
     private JLabel titleLabel;
     private CustomTextField<JTextField> titleField;
     private CustomTextField<JTextField> descriptionField;
     private CustomTextField<JTextField> locationField;
     private JLabel errorLabel;
     private JButton submitButton;
-    private JButton cancelButton;
     private PostController postController;
 
     public UserInNeed loggedInUser;
 
     public PostCreateView(boolean isOffers) {
-        this.isOffers = isOffers;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setBorder(BorderFactory.createEmptyBorder(100, 100, 100, 100));
         errorLabel = new JLabel();
         titleLabel = new JLabel("Create a new post");
         titleLabel.setFont(titleLabel.getFont().deriveFont(24.0f));
@@ -41,20 +39,11 @@ public class PostCreateView extends JPanel {
             )
         );
 
-        cancelButton = new JButton("Cancel");
-        cancelButton.addActionListener(e -> {
-            postController.togglePostCreate();
-            titleField.setText("");
-            descriptionField.setText("");
-            locationField.setText("");
-        });
-
         add(titleLabel);
         add(titleField);
         add(descriptionField);
         add(locationField);
         add(submitButton);
-        add(cancelButton);
         add(errorLabel);
     }
 
