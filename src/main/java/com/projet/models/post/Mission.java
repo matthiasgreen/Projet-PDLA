@@ -78,4 +78,13 @@ public class Mission extends Post {
     public static int getMyNumberOfPages(UserInNeed user) throws SQLException {
         return getMyNumberOfPages(PostType.MISSION, user);
     }
+
+    public void setFinished() throws SQLException {
+        status = MissionStatus.DONE;
+        SqlUtility.executeUpdate(
+            "UPDATE posts SET status = ? WHERE id = ?",
+            status.toString(),
+            id
+        );
+    }
 }

@@ -106,8 +106,7 @@ public class PostListView extends JPanel {
         
         deleteButton.addActionListener(
             e -> {
-                DefaultListModel<Post> listModel = (DefaultListModel<Post>) postJList.getModel();                
-                listModel.remove(postJList.getSelectedIndex());
+                postController.deletePost(postJList.getSelectedValue());
                 
             }
         );
@@ -117,11 +116,7 @@ public class PostListView extends JPanel {
         //create a button to set mission as done
         setDone = new JButton("Set as done");
         setDone.addActionListener(e -> {
-            try {
-                postController.setFinished((Mission) postJList.getSelectedValue());
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-            }
+            postController.setFinished((Mission) postJList.getSelectedValue());
         });
         add(setDone);
         setDone.setVisible(false);

@@ -184,15 +184,22 @@ public class PostController {
         }
     };
 
+    public void deletePost(Post post) {
+        try {
+            post.delete();
+            myListSetPosts();
+        } catch (SQLException e) {
+            myPostListView.setError("Error deleting post: " + e.getMessage());
+        }
+    }
 
-    public void setFinished(Mission mission) throws SQLException{
-        mission.status = MissionStatus.DONE;
-        SqlUtility.executeQuery(
-        "UPDATE posts SET status = ?, WHERE id = ?",
-        mission.status.toString(),
-        mission.id
-        );
-        myListSetPosts();
+    public void setFinished(Mission mission) {
+        try {
+            mission.setFinished();
+            myListSetPosts();
+        } catch (SQLException e) {
+            myPostListView.setError("Error setting mission as done: " + e.getMessage());
+        }
     }
 
     //a function to send the justification of the refusal to the database

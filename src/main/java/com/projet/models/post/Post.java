@@ -157,4 +157,13 @@ public abstract class Post {
         int count = result.getInt(1);
         return (int) Math.ceil((double) count / PAGE_SIZE);
     }
+
+    public void delete() throws SQLException {
+        SqlUtility.executeUpdate(
+            "DELETE FROM posts WHERE id=?",
+            id
+        );
+        
+    }
+
 }
